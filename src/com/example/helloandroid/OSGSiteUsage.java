@@ -40,13 +40,15 @@ public class OSGSiteUsage  implements OnClickListener {
 	
 	public void onClick(View v) {
 		AutoCompleteTextView textView = (AutoCompleteTextView) this.act.findViewById(R.id.autoCompleteTextView1);
+		AutoCompleteTextView vo_textView = (AutoCompleteTextView) this.act.findViewById(R.id.vo_auto_complete);
 		
 		String site = textView.getText().toString();
+		String vo = vo_textView.getText().toString();
 		
 		context = v.getContext();
 		
 		
-		XYMultipleSeriesDataset xyseries = this.GetOSGVOUsage(site);
+		XYMultipleSeriesDataset xyseries = this.GetOSGVOUsage(site, vo);
 		XYMultipleSeriesRenderer xyseriesrender = this.getDemoRenderer(xyseries.getSeriesCount());
 		Intent intent = ChartFactory.getLineChartIntent(this.context, xyseries, xyseriesrender, site);
 		
@@ -89,20 +91,25 @@ public class OSGSiteUsage  implements OnClickListener {
 	  }
 	
 	  
-	  private XYMultipleSeriesDataset GetOSGVOUsage(String site){
+	  private XYMultipleSeriesDataset GetOSGVOUsage(String site, String vo){
 		  XYMultipleSeriesDataset xyseries = new XYMultipleSeriesDataset();
 		  URL vo_url = null;
 		  URLConnection urlConnection = null;
 		  BufferedReader in = null;
 		  String line_buffer = "";
 		  String buffer = "";
+		  if (site.equals(""))
+			  site = ".*";
+		  if (vo.equals(""))
+			  vo = ".*";
 
 		  try {
-			  vo_url = new URL("http://gratiaweb.grid.iu.edu/gratia/csv/status_vo?facility=" + site);
+			  
+			  vo_url = new URL("http://gratiaweb.grid.iu.edu/gratia/csv/status_vo?facility=" + site + "&vo=" + vo);
 			  urlConnection = vo_url.openConnection();
 			  in = new BufferedReader(new InputStreamReader(vo_url.openStream()));
 			  try {
-				  String vo = "";
+				  String vo_key = "";
 				  XYSeries xy = null;
 				  String [] entries = null;
 				  while ((line_buffer = in.readLine()) != null) {
@@ -110,13 +117,13 @@ public class OSGSiteUsage  implements OnClickListener {
 					  if (entries[0].equals("VO"))
 						  continue;
 					  
-					  if (!vo.equals(entries[0])) {
-						  vo = entries[0];
+					  if (!vo_key.equals(entries[0])) {
+						  vo_key = entries[0];
 						  if (xy != null) {
 							  if(xy.getItemCount() > 0)
 								  xyseries.addSeries(xy);
 						  }
-						  xy = new XYSeries(vo);
+						  xy = new XYSeries(vo_key);
 					  }
 					  SimpleDateFormat simple_date = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
 					  Date d = null;

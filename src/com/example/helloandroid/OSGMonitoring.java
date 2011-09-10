@@ -45,7 +45,7 @@ public class OSGMonitoring extends Activity implements OnClickListener, Runnable
 		this.auto_textview = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
 		this.auto_textview.setThreshold(3);
 		
-		this.vo_autotext =  (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView2);
+		this.vo_autotext =  (AutoCompleteTextView) findViewById(R.id.vo_auto_complete);
 		this.vo_autotext.setThreshold(2);
 		
 		Thread sites_thread = new Thread(this);
