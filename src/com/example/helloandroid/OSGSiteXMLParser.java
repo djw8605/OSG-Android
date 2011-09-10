@@ -48,8 +48,10 @@ public class OSGSiteXMLParser implements ContentHandler {
 	public String [] GetSites() {
 		//Object [] objArray = sites.toArray();
 		String [] strArray = new String[sites.size()];
-		for (int i = 0; i < sites.size(); i++)
+		for (int i = 0; i < sites.size(); i++) {
 			strArray[i] = sites.get(i);
+		}
+		
 		return strArray;
 		
 	}

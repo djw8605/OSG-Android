@@ -44,8 +44,9 @@ public class OSGSiteUsage  implements OnClickListener {
 		
 		context = v.getContext();
 		
-		XYMultipleSeriesRenderer xyseriesrender = this.getDemoRenderer();
+		
 		XYMultipleSeriesDataset xyseries = this.GetOSGVOUsage(site);
+		XYMultipleSeriesRenderer xyseriesrender = this.getDemoRenderer(xyseries.getSeriesCount());
 		Intent intent = ChartFactory.getLineChartIntent(this.context, xyseries, xyseriesrender, site);
 		
 	    act.startActivity(intent);
@@ -54,7 +55,7 @@ public class OSGSiteUsage  implements OnClickListener {
 	}
 
 
-	  private XYMultipleSeriesRenderer getDemoRenderer() {
+	  private XYMultipleSeriesRenderer getDemoRenderer(int seriesRequested) {
 	    XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
 	    renderer.setAxisTitleTextSize(16);
 	    renderer.setChartTitleTextSize(20);
@@ -63,16 +64,14 @@ public class OSGSiteUsage  implements OnClickListener {
 	    renderer.setPointSize(5f);
 	    renderer.setMargins(new int[] {20, 30, 15, 0});
 	    XYSeriesRenderer r = new XYSeriesRenderer();
-	    r.setColor(Color.BLUE);
-	    r.setPointStyle(PointStyle.SQUARE);
-	    r.setFillBelowLine(true);
-	    r.setFillBelowLineColor(Color.WHITE);
-	    r.setFillPoints(true);
-	    renderer.addSeriesRenderer(r);
-	    r = new XYSeriesRenderer();
-	    r.setPointStyle(PointStyle.CIRCLE);
-	    r.setColor(Color.GREEN);
-	    r.setFillPoints(true);
+	    for (int i = 0; i < seriesRequested; i++) {
+	    	r = new XYSeriesRenderer();
+	    	r.setColor((i*16)+16);
+	    	r.setPointStyle(PointStyle.SQUARE);
+	    	r.setFillPoints(true);
+	    	renderer.addSeriesRenderer(r);
+	    }
+
 	    //renderer.addSeriesRenderer(r);
 	    renderer.setAxesColor(Color.DKGRAY);
 	    renderer.setLabelsColor(Color.LTGRAY);
@@ -103,7 +102,10 @@ public class OSGSiteUsage  implements OnClickListener {
 					  
 					  if (!vo.equals(entries[0])) {
 						  vo = entries[0];
-						  xyseries.addSeries(xy);
+						  if (xy != null) {
+							  if(xy.getItemCount() > 0)
+								  xyseries.addSeries(xy);
+						  }
 						  xy = new XYSeries(vo);
 					  }
 					  SimpleDateFormat simple_date = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
