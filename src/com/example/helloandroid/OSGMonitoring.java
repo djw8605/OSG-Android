@@ -34,15 +34,19 @@ public class OSGMonitoring extends Activity implements OnClickListener, Runnable
 	}
 	
 	private AutoCompleteTextView auto_textview = null;
+	private AutoCompleteTextView vo_autotext = null;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.osg_monitoring);
 		
-		StartProgressDialog();
+		StartProgressDialog("Loading Sites...");
 		
 		this.auto_textview = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
 		this.auto_textview.setThreshold(3);
+		
+		this.vo_autotext =  (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView2);
+		this.vo_autotext.setThreshold(2);
 		
 		Thread sites_thread = new Thread(this);
 		sites_thread.start();
@@ -58,20 +62,27 @@ public class OSGMonitoring extends Activity implements OnClickListener, Runnable
 	private ProgressDialog p_dialog;
 	
 	private String [] site_names;
+	private String [] vo_names;
 	
 	public void run() {
-		try {
-			Thread.sleep(100);
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-		}
 		String [] sites = GetSites();
 		Message msg = Message.obtain(sitesMessage);
 		msg.obj = sites;
 		msg.sendToTarget();
 		
+		StopProgressDialog();
+		
+		msg = Message.obtain(vosMessage);
+		msg.arg1 = 1;
+		msg.sendToTarget();
+		
+		String [] vos = GetVOs();
+		msg = Message.obtain(vosMessage);
+		msg.obj = vos;
+		msg.sendToTarget();
 		
 		StopProgressDialog();
+		
 	}
 	
 	Handler sitesMessage = new Handler() {
@@ -85,10 +96,23 @@ public class OSGMonitoring extends Activity implements OnClickListener, Runnable
 		
 	};
 	
-	private void StartProgressDialog() {
+	Handler vosMessage = new Handler() {
+		public void handleMessage(Message msg) {
+			if (msg.arg1 == 1) {
+				StartProgressDialog("Loading VO's...");
+			} else {
+				vo_names = (String []) msg.obj;
+				ArrayAdapter<String> adapter = new ArrayAdapter<String>(osg_monitoring, R.layout.list_item2, vo_names);
+				vo_autotext.setAdapter(adapter);
+			}
+			
+		}
+	};
+	
+	private void StartProgressDialog(String msg) {
 		this.p_dialog = new ProgressDialog(this);
 		this.p_dialog.setCancelable(true);
-		this.p_dialog.setMessage("Loading sites...");
+		this.p_dialog.setMessage(msg);
 		this.p_dialog.show();
 		
 	}
@@ -111,18 +135,35 @@ public class OSGMonitoring extends Activity implements OnClickListener, Runnable
 		  OSGSiteXMLParser osg_parser = new OSGSiteXMLParser();
 		  String url = "http://myosg.grid.iu.edu/rgsummary/xml?datasource=summary&gip_status_attrs_showtestresults=on&downtime_attrs_showpast=&account_type=cumulative_hours&ce_account_type=gip_vo&se_account_type=vo_transfer_volume&bdiitree_type=total_jobs&bdii_object=service&bdii_server=is-osg&start_type=7daysago&start_date=09%2F10%2F2011&end_type=now&end_date=09%2F10%2F2011&all_resources=on&gridtype=on&gridtype_1=on&service_central_value=0&service_hidden_value=0&active_value=1&disable_value=1%22";
 		  //String [] toReturn = null;
-		  
+
 		  try {
-		  XMLReader myReader = XMLReaderFactory.createXMLReader();
-		  myReader.setContentHandler(osg_parser);
-		  myReader.parse(new InputSource(new URL(url).openStream()));
+			  XMLReader myReader = XMLReaderFactory.createXMLReader();
+			  myReader.setContentHandler(osg_parser);
+			  myReader.parse(new InputSource(new URL(url).openStream()));
 		  } catch (Exception e) {
 			  System.err.println(e.getMessage());
 		  }
-		  
+
 		  return osg_parser.GetSites();
-		  
-		  
+
+
+	  }
+
+	  private String [] GetVOs() {
+		  OSGSiteXMLParser osg_parser = new OSGSiteXMLParser();
+
+		  String url = "http://myosg.grid.iu.edu/vosummary/xml?all_vos=on&active=on&active_value=1&datasource=summary";
+
+		  try {
+			  XMLReader myReader = XMLReaderFactory.createXMLReader();
+			  myReader.setContentHandler(osg_parser);
+			  myReader.parse(new InputSource(new URL(url).openStream()));
+		  } catch (Exception e) {
+			  System.err.println(e.getMessage());
+		  }
+
+		  return osg_parser.GetSites();
+
 	  }
 	  
 }
