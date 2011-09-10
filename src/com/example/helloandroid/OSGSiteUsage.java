@@ -53,6 +53,13 @@ public class OSGSiteUsage  implements OnClickListener {
 		
 		
 	}
+	
+	private void ShowProgressBar() {
+		
+		
+		
+		
+	}
 
 
 	  private XYMultipleSeriesRenderer getDemoRenderer(int seriesRequested) {
@@ -66,7 +73,7 @@ public class OSGSiteUsage  implements OnClickListener {
 	    XYSeriesRenderer r = new XYSeriesRenderer();
 	    for (int i = 0; i < seriesRequested; i++) {
 	    	r = new XYSeriesRenderer();
-	    	r.setColor((i*16)+16);
+	    	r.setColor((i*200)+16);
 	    	r.setPointStyle(PointStyle.SQUARE);
 	    	r.setFillPoints(true);
 	    	renderer.addSeriesRenderer(r);
@@ -112,7 +119,7 @@ public class OSGSiteUsage  implements OnClickListener {
 					  Date d = null;
 					  try {
 						  d = simple_date.parse(entries[1], new ParsePosition(0));
-						  xy.add((double)d.getTime(), Double.parseDouble(entries[2]));
+						  xy.add((double)d.getTime()/(3600*24*365), Double.parseDouble(entries[2]));
 					  } catch (Exception e) {
 						  System.err.println(e.getMessage());
 					  } finally {

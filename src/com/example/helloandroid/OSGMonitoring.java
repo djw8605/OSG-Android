@@ -10,6 +10,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -18,7 +20,12 @@ import android.widget.Button;
 
 public class OSGMonitoring extends Activity implements OnClickListener, Runnable {
 	
+	// Graph activity
 	private OSGSiteUsage osg_site_usage = null;
+	
+	// Pointer to self
+	// Used mostly in the message
+	private Activity osg_monitoring = this;
 	
 	public OSGMonitoring() {
 		osg_site_usage = new OSGSiteUsage(this);
@@ -38,7 +45,7 @@ public class OSGMonitoring extends Activity implements OnClickListener, Runnable
 		this.auto_textview.setThreshold(3);
 		
 		Thread sites_thread = new Thread(this);
-		sites_thread.run();
+		sites_thread.start();
 		
 		Button get_usage_button = (Button) findViewById(R.id.confirm_site);
 		get_usage_button.setOnClickListener(this.osg_site_usage);
@@ -53,11 +60,30 @@ public class OSGMonitoring extends Activity implements OnClickListener, Runnable
 	private String [] site_names;
 	
 	public void run() {
-		this.site_names = GetSites();
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, site_names);
-		this.auto_textview.setAdapter(adapter);
+		try {
+			Thread.sleep(100);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+		String [] sites = GetSites();
+		Message msg = Message.obtain(sitesMessage);
+		msg.obj = sites;
+		msg.sendToTarget();
+		
+		
 		StopProgressDialog();
 	}
+	
+	Handler sitesMessage = new Handler() {
+		
+		public void handleMessage(Message msg) {
+			site_names = (String []) msg.obj;
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(osg_monitoring, R.layout.list_item, site_names);
+			auto_textview.setAdapter(adapter);
+			
+		}
+		
+	};
 	
 	private void StartProgressDialog() {
 		this.p_dialog = new ProgressDialog(this);
