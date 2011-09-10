@@ -1,0 +1,91 @@
+package com.example.helloandroid;
+
+import java.util.ArrayList;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+
+
+public class OSGSiteXMLParser implements ContentHandler {
+
+	private ArrayList<String> sites;
+	
+	private boolean reading_name = false;
+	
+	public void startElement(String uri, String localName, String qName, Attributes atts) {
+		
+		if (qName == "Name") {
+			reading_name = true;
+			
+		}
+		
+		
+	}
+	
+	public void characters(char[] ch, int start, int length) throws SAXException {
+		if (reading_name) {
+			sites.add(new String(ch));
+		}
+		
+	}
+	
+	public void endElement(String uri, String localName,
+			String qName) throws SAXException {
+		if (reading_name)
+			reading_name = false;
+		
+		
+	}
+	
+	public String [] GetSites() {
+		return (String [])sites.toArray();
+		
+	}
+	
+	public void ignorableWhitespace(char[] ch,
+            int start,
+            int length)
+            throws SAXException {
+		
+		
+	}
+	
+	public void skippedEntity(String name)
+            throws SAXException {
+		
+	}
+	
+	public void processingInstruction(String target,
+            String data)
+            throws SAXException {
+		
+	}
+	
+	public void endPrefixMapping(String prefix)
+            throws SAXException {
+		
+	}
+	
+	public void startPrefixMapping(String prefix,
+            String uri)
+            throws SAXException {
+		
+	}
+	
+	public void endDocument()
+            throws SAXException {
+		
+	}
+	
+	public void startDocument()
+            throws SAXException {
+		
+	}
+	
+	public void setDocumentLocator(Locator locator) {
+		
+	}
+	
+}

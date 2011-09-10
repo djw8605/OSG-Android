@@ -12,13 +12,20 @@ import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 
 public class OSGMonitoring extends Activity implements OnClickListener {
 	
@@ -34,7 +41,13 @@ public class OSGMonitoring extends Activity implements OnClickListener {
 		
 		XYMultipleSeriesRenderer xyseriesrender = this.getDemoRenderer();
 		XYMultipleSeriesDataset xyseries = new XYMultipleSeriesDataset();
-		XYSeries xy = new XYSeries("Example series");
+		XYSeries xy = new XYSeries("VO Usage");
+		String [] site_names = GetSites();
+		
+		AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, site_names);
+		textView.setAdapter(adapter);
+		
 		xy.add(1.0, 2.0);
 		xy.add(3.0, 4.0);
 		xy.add(10.0, 10.0);
@@ -110,6 +123,7 @@ public class OSGMonitoring extends Activity implements OnClickListener {
 
 			  }
 		  } catch (IOException e) {
+			  this.ErrorDialog(e.getMessage());
 			  System.err.println(e.getMessage());
 
 		  } finally {
@@ -129,6 +143,40 @@ public class OSGMonitoring extends Activity implements OnClickListener {
 	  }
 
 
+	  private void ErrorDialog(String message) {
+		  
+		  AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		  builder.setMessage(message)
+		         .setCancelable(false)
+		         .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+		             public void onClick(DialogInterface dialog, int id) {
+		                  dialog.cancel();
+		             }
+		         });
+		  AlertDialog alert = builder.create();
+		  
+		  
+		  
+	  }
+	  
+	  private String [] GetSites() {
+		  OSGSiteXMLParser osg_parser = new OSGSiteXMLParser();
+		  String url = "http://myosg.grid.iu.edu/rgsummary/?datasource=summary&gip_status_attrs_showtestresults=on&downtime_attrs_showpast=&account_type=cumulative_hours&ce_account_type=gip_vo&se_account_type=vo_transfer_volume&bdiitree_type=total_jobs&bdii_object=service&bdii_server=is-osg&start_type=7daysago&start_date=09%2F10%2F2011&end_type=now&end_date=09%2F10%2F2011&all_resources=on&gridtype=on&gridtype_1=on&service_central_value=0&service_hidden_value=0&active_value=1&disable_value=1";
+		  //String [] toReturn = null;
+		  
+		  try {
+		  XMLReader myReader = XMLReaderFactory.createXMLReader();
+		  myReader.setContentHandler(osg_parser);
+		  myReader.parse(new InputSource(new URL(url).openStream()));
+		  } catch (Exception e) {
+			  System.err.println(e.getMessage());
+		  }
+		  
+		  return osg_parser.GetSites();
+		  
+		  
+	  }
+	  
 }
 
 	
