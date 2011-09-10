@@ -1,26 +1,14 @@
 package com.example.helloandroid;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLConnection;
 
-import org.achartengine.ChartFactory;
-import org.achartengine.chart.PointStyle;
-import org.achartengine.model.XYMultipleSeriesDataset;
-import org.achartengine.model.XYSeries;
-import org.achartengine.renderer.XYMultipleSeriesRenderer;
-import org.achartengine.renderer.XYSeriesRenderer;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,7 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
-public class OSGMonitoring extends Activity implements OnClickListener {
+public class OSGMonitoring extends Activity implements OnClickListener, Runnable {
 	
 	private OSGSiteUsage osg_site_usage = null;
 	
@@ -38,31 +26,49 @@ public class OSGMonitoring extends Activity implements OnClickListener {
 		
 	}
 	
+	private AutoCompleteTextView auto_textview = null;
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.osg_monitoring);
 		
-
+		StartProgressDialog();
 		
-		String [] site_names = GetSites();
+		this.auto_textview = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
+		this.auto_textview.setThreshold(3);
 		
-		AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
-		textView.setThreshold(3);
+		Thread sites_thread = new Thread(this);
+		sites_thread.run();
+		
 		Button get_usage_button = (Button) findViewById(R.id.confirm_site);
 		get_usage_button.setOnClickListener(this.osg_site_usage);
-		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, site_names);
-		textView.setAdapter(adapter);
-		
-
-	
-		
-
-		
 		
 		//lc.drawSeries(draw_canvas, paint_canvas, stuff, new XYSeriesRenderer(), (float)15.0, 0);
 		
 		
+	}
+	
+	private ProgressDialog p_dialog;
+	
+	private String [] site_names;
+	
+	public void run() {
+		this.site_names = GetSites();
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, site_names);
+		this.auto_textview.setAdapter(adapter);
+		StopProgressDialog();
+	}
+	
+	private void StartProgressDialog() {
+		this.p_dialog = new ProgressDialog(this);
+		this.p_dialog.setCancelable(true);
+		this.p_dialog.setMessage("Loading sites...");
+		this.p_dialog.show();
+		
+	}
+	
+	private void StopProgressDialog() {
+		this.p_dialog.dismiss();
 	}
 
 	public void onClick(View v) {
