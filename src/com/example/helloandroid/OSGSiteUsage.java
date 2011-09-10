@@ -8,6 +8,7 @@ import java.net.URLConnection;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.chart.PointStyle;
@@ -63,6 +64,7 @@ public class OSGSiteUsage  implements OnClickListener {
 
 
 	  private XYMultipleSeriesRenderer getDemoRenderer(int seriesRequested) {
+		Random rand = new Random();
 	    XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
 	    renderer.setAxisTitleTextSize(16);
 	    renderer.setChartTitleTextSize(20);
@@ -73,7 +75,8 @@ public class OSGSiteUsage  implements OnClickListener {
 	    XYSeriesRenderer r = new XYSeriesRenderer();
 	    for (int i = 0; i < seriesRequested; i++) {
 	    	r = new XYSeriesRenderer();
-	    	r.setColor((i*200)+16);
+	    	r.setColor(Color.rgb(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256)));
+	    	//r.setColor((i*200)+16);
 	    	r.setPointStyle(PointStyle.SQUARE);
 	    	r.setFillPoints(true);
 	    	renderer.addSeriesRenderer(r);
