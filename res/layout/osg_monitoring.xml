@@ -7,6 +7,7 @@
     <AutoCompleteTextView android:id="@+id/autoCompleteTextView1" android:layout_height="wrap_content" android:layout_width="match_parent" android:text="@string/enter_site">
         <requestFocus></requestFocus>
     </AutoCompleteTextView>
+    <Button android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/confirm_site" android:text="@string/get_usage"></Button>
     <SurfaceView android:layout_height="wrap_content" android:layout_weight="0.55" android:layout_width="match_parent" android:id="@+id/graph_view"></SurfaceView>
     
 </LinearLayout>

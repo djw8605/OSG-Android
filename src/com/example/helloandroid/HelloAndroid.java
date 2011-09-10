@@ -20,6 +20,8 @@ public class HelloAndroid extends Activity {
         
         setContentView(R.layout.main);
         
+        
+        
     	Button monitoring_button = (Button)findViewById(R.id.view_monitoring);
     	monitoring_button.setOnClickListener(this.osg_monitoring);
     }

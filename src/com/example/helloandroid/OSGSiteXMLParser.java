@@ -14,9 +14,15 @@ public class OSGSiteXMLParser implements ContentHandler {
 	
 	private boolean reading_name = false;
 	
+	public OSGSiteXMLParser() {
+		
+		this.sites = new ArrayList<String>();
+		
+	}
+	
 	public void startElement(String uri, String localName, String qName, Attributes atts) {
 		
-		if (qName == "Name") {
+		if (qName.equals("Name")) {
 			reading_name = true;
 			
 		}
@@ -26,7 +32,7 @@ public class OSGSiteXMLParser implements ContentHandler {
 	
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		if (reading_name) {
-			sites.add(new String(ch));
+			sites.add(new String(ch, start, length));
 		}
 		
 	}
@@ -40,7 +46,11 @@ public class OSGSiteXMLParser implements ContentHandler {
 	}
 	
 	public String [] GetSites() {
-		return (String [])sites.toArray();
+		//Object [] objArray = sites.toArray();
+		String [] strArray = new String[sites.size()];
+		for (int i = 0; i < sites.size(); i++)
+			strArray[i] = sites.get(i);
+		return strArray;
 		
 	}
 	

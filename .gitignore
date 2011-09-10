@@ -1,0 +1,4 @@
+*.class
+gen/com/example/helloandroid/*
+
+

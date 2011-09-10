@@ -5,4 +5,5 @@
     <string name="viewmonitoring">View Monitoring</string>
     <string name="viewmap">View Map</string>
     <string name="enter_site">Enter Site</string>
+    <string name="get_usage">Get Usage</string>
 </resources>
