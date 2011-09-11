@@ -15,18 +15,20 @@ public final class R {
         public static final int osg_logo=0x7f020001;
     }
     public static final class id {
-        public static final int autoCompleteTextView1=0x7f05000a;
-        public static final int confirm_site=0x7f05000b;
+        public static final int autoCompleteTextView1=0x7f05000c;
+        public static final int confirm_site=0x7f05000d;
         public static final int imageView1=0x7f050000;
+        public static final int linearLayout1=0x7f050001;
         public static final int tableLayout1=0x7f050003;
         public static final int tableRow1=0x7f050004;
-        public static final int tableRow2=0x7f050005;
-        public static final int tableRow3=0x7f050008;
-        public static final int textView1=0x7f050009;
-        public static final int textView2=0x7f050006;
-        public static final int view_map=0x7f050002;
-        public static final int view_monitoring=0x7f050001;
-        public static final int vo_auto_complete=0x7f050007;
+        public static final int tableRow2=0x7f050007;
+        public static final int tableRow3=0x7f05000a;
+        public static final int textView1=0x7f05000b;
+        public static final int textView2=0x7f050008;
+        public static final int view_map=0x7f050006;
+        public static final int view_monitoring=0x7f050005;
+        public static final int vo_auto_complete=0x7f050009;
+        public static final int webView1=0x7f050002;
     }
     public static final class layout {
         public static final int list_item=0x7f030000;
