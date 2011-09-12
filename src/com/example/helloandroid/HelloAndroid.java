@@ -39,6 +39,10 @@ public class HelloAndroid extends Activity implements OnClickListener {
         
     	Button monitoring_button = (Button)findViewById(R.id.view_monitoring);
     	monitoring_button.setOnClickListener(this.osg_monitoring);
+    	
+    	Button map_button = (Button)findViewById(R.id.view_map);
+    	map_button.setOnClickListener(this);
+    	
     }
 
 

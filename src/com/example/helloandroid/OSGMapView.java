@@ -26,6 +26,9 @@ public class OSGMapView extends MapActivity {
 	MapView mapView;
 	
 	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.maplayout);
+		
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		

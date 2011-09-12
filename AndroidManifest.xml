@@ -17,6 +17,7 @@
         <activity android:name="OSGMonitoring"></activity>
         <activity android:name="org.achartengine.GraphicalActivity"></activity>
         <uses-library android:name="com.google.android.maps" />
+        <activity android:name="OSGMapView"></activity>
 
     </application>
 </manifest>
