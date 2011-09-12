@@ -19,15 +19,18 @@ import org.achartengine.renderer.XYSeriesRenderer;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
 
-public class OSGSiteUsage  implements OnClickListener {
+public class OSGSiteUsage  implements OnClickListener, Runnable {
 
 	public Context context;
 	
@@ -38,27 +41,64 @@ public class OSGSiteUsage  implements OnClickListener {
 		
 	}
 	
+	private Thread data_thread;
+	private String site = "";
+	private String vo = "";
+	
 	public void onClick(View v) {
 		AutoCompleteTextView textView = (AutoCompleteTextView) this.act.findViewById(R.id.autoCompleteTextView1);
 		AutoCompleteTextView vo_textView = (AutoCompleteTextView) this.act.findViewById(R.id.vo_auto_complete);
 		
-		String site = textView.getText().toString();
-		String vo = vo_textView.getText().toString();
+		site = textView.getText().toString();
+		vo = vo_textView.getText().toString();
+		
+		
 		
 		context = v.getContext();
 		
+		this.ShowProgressBar();
 		
-		XYMultipleSeriesDataset xyseries = this.GetOSGVOUsage(site, vo);
-		XYMultipleSeriesRenderer xyseriesrender = this.getDemoRenderer(xyseries.getSeriesCount());
-		Intent intent = ChartFactory.getLineChartIntent(this.context, xyseries, xyseriesrender, site);
-		
-	    act.startActivity(intent);
-		
+		this.data_thread = new Thread(this);
+		this.data_thread.start();
 		
 	}
 	
-	private void ShowProgressBar() {
+	
+	Handler usage_handler = new Handler() {
 		
+		public void handleMessage(Message msg) {
+			
+			XYMultipleSeriesDataset xyseries = (XYMultipleSeriesDataset) msg.obj; 
+			XYMultipleSeriesRenderer xyseriesrender = getDemoRenderer(xyseries.getSeriesCount());
+			Intent intent = ChartFactory.getLineChartIntent(context, xyseries, xyseriesrender, site);
+			
+			p_dialog.dismiss();
+			
+		    act.startActivity(intent);
+		    
+		    
+			
+		}
+		
+	};
+	
+	public void run() {
+		// TODO Auto-generated method stub
+		Message msg = Message.obtain(usage_handler);
+		
+		msg.obj = this.GetOSGVOUsage(site, vo);
+		msg.sendToTarget();
+		
+	}
+	  
+	
+	private ProgressDialog p_dialog = null;
+	
+	private void ShowProgressBar() {
+		this.p_dialog = new ProgressDialog(this.act);
+		this.p_dialog.setCancelable(true);
+		this.p_dialog.setMessage("Loading usage...");
+		this.p_dialog.show();
 		
 		
 		
@@ -180,7 +220,8 @@ public class OSGSiteUsage  implements OnClickListener {
 		  
 		  
 	  }
-	  
+
+
 	
 	
 }
