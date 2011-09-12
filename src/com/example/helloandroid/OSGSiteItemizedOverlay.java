@@ -27,7 +27,6 @@ public class OSGSiteItemizedOverlay extends BalloonItemizedOverlay {
 	}
 
 	public void addOverlay(OverlayItem overlay) {
-		
 	    mOverlays.add(overlay);
 	    populate();
 	}
