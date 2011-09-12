@@ -1,16 +1,15 @@
 package com.example.helloandroid;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
 
-public class HelloAndroid extends Activity {
+public class HelloAndroid extends Activity implements OnClickListener {
 	
 	public OSGMonitoring osg_monitoring;
 	
@@ -27,8 +26,8 @@ public class HelloAndroid extends Activity {
         setContentView(R.layout.main);
         
         WebView status = (WebView) findViewById(R.id.webView1);
-        
-        String jobs_web = "<html><body bgcolor=\"black\"><font color=\"white\">Jobs running: 24,000</font></body></html>";
+        status.setBackgroundColor(Color.BLACK);
+        String jobs_web = "<html bgcolor=\"black\"><body bgcolor=\"black\"><font color=\"white\">Fake data <p/>Jobs running: 24,000</font></body></html>";
 		
 
 		status.loadData(jobs_web, "text/html", "utf-8");
@@ -41,7 +40,15 @@ public class HelloAndroid extends Activity {
     	Button monitoring_button = (Button)findViewById(R.id.view_monitoring);
     	monitoring_button.setOnClickListener(this.osg_monitoring);
     }
-    
-    
+
+
+	public void onClick(View v) {
+		if (v.getId()  == R.id.view_map) {
+			Intent osg_map_intent = new Intent(v.getContext(), OSGMapView.class);
+			v.getContext().startActivity(osg_map_intent);
+			
+		}
+		
+	}
     
 }
