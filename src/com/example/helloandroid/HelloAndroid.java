@@ -92,7 +92,7 @@ public class HelloAndroid extends Activity implements OnClickListener {
 			long jobs_daily = (Long)obj.get("jobs_hourly");
 			long transfers_daily = (Long)obj.get("transfers_hourly");
 
-			html_src = "<html bgcolor=\"black\"><head><style type=\"text/css\">body {color:white;}</style></head><body bgcolor=\"black\">Live Data:<br/>";
+			html_src = "<html bgcolor=\"black\"><head><style type=\"text/css\">body {color:white;}</style></head><body bgcolor=\"black\">";
 			DecimalFormat df = new DecimalFormat();
 			DecimalFormatSymbols dfs = new DecimalFormatSymbols();
 			dfs.setGroupingSeparator(',');
