@@ -1,5 +1,13 @@
 package com.example.helloandroid;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+
+import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -31,7 +39,7 @@ public class HelloAndroid extends Activity implements OnClickListener {
 		
 
 		status.loadData(jobs_web, "text/html", "utf-8");
-			
+		this.CreateStatusDisplay();
         
         //status.loadData(jobs_web, "text/html", "utf-8");
         //status.getSettings().setJavaScriptEnabled(true);
@@ -52,6 +60,40 @@ public class HelloAndroid extends Activity implements OnClickListener {
 			v.getContext().startActivity(osg_map_intent);
 			
 		}
+		
+	}
+	
+	protected void CreateStatusDisplay() {
+		// First, get json
+		URL json_url = null;
+		URLConnection urlConnection = null;
+		BufferedReader in = null;
+		JSONParser parser=new JSONParser();
+		String line_buf = "";
+		String buf = "";
+		
+		try {
+		json_url = new URL("http://display1.grid.iu.edu/osg_display/display.json");
+		urlConnection = json_url.openConnection();
+		in = new BufferedReader(new InputStreamReader(json_url.openStream()));
+
+		while ((line_buf = in.readLine()) != null) {
+			buf += line_buf;
+			System.out.println(line_buf);
+			
+		}
+		
+		Object obj = parser.parse(buf);
+		//Object obj = JSONValue.parse(buf);
+		System.err.println(obj.toString());
+		
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+		
+		
+		
+		
 		
 	}
     
