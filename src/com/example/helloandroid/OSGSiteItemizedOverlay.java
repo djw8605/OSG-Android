@@ -4,15 +4,16 @@ import java.util.ArrayList;
 
 import android.graphics.drawable.Drawable;
 
-import com.google.android.maps.ItemizedOverlay;
+import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
+import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 
-public class OSGSiteItemizedOverlay extends ItemizedOverlay {
+public class OSGSiteItemizedOverlay extends BalloonItemizedOverlay {
 
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 	
-	public OSGSiteItemizedOverlay(Drawable defaultMarker) {
-		super(boundCenterBottom(defaultMarker));
+	public OSGSiteItemizedOverlay(Drawable defaultMarker, MapView mapView) {
+		super(defaultMarker, mapView);
 	}
 
 	@Override
@@ -26,9 +27,17 @@ public class OSGSiteItemizedOverlay extends ItemizedOverlay {
 	}
 
 	public void addOverlay(OverlayItem overlay) {
+		
 	    mOverlays.add(overlay);
 	    populate();
 	}
 	
+	public boolean onBallonTap(int index, OverlayItem item) {
+		
+		
+		return false;
+		
+		
+	}
 	
 }
