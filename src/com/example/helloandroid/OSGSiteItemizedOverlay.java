@@ -13,7 +13,7 @@ public class OSGSiteItemizedOverlay extends BalloonItemizedOverlay {
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 	
 	public OSGSiteItemizedOverlay(Drawable defaultMarker, MapView mapView) {
-		super(defaultMarker, mapView);
+		super(boundCenter(defaultMarker), mapView);
 	}
 
 	@Override

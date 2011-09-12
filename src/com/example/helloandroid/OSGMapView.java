@@ -36,7 +36,7 @@ public class OSGMapView extends MapActivity {
 		drawable = this.getResources().getDrawable(R.drawable.nebraskan);
 		itemizedOverlay = new OSGSiteItemizedOverlay(drawable, mapView);
 		
-		GeoPoint point = new GeoPoint( 40820645, -96692843);
+		GeoPoint point = new GeoPoint( (int)(40.820645*1E6), (int)(-96.692843*1E6));
 		OverlayItem overlayitem = new OverlayItem(point, "Nebraska", "Nebraska Site");
 		overlayitem.setMarker(drawable);
 		itemizedOverlay.addOverlay(overlayitem);
