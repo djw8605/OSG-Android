@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.Random;
 
 import org.achartengine.ChartFactory;
-import org.achartengine.chart.PointStyle;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
@@ -115,14 +114,14 @@ public class OSGSiteUsage  implements OnClickListener, Runnable {
 	    renderer.setChartTitleTextSize(20);
 	    renderer.setLabelsTextSize(15);
 	    renderer.setLegendTextSize(15);
-	    renderer.setPointSize(5f);
+	    //renderer.setPointSize(5f);
 	    renderer.setMargins(new int[] {20, 30, 15, 0});
 	    XYSeriesRenderer r = new XYSeriesRenderer();
 	    for (int i = 0; i < seriesRequested; i++) {
 	    	r = new XYSeriesRenderer();
 	    	r.setColor(Color.rgb(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256)));
 	    	//r.setColor((i*200)+16);
-	    	r.setPointStyle(PointStyle.SQUARE);
+	    	//r.setPointStyle(PointStyle.SQUARE);
 	    	r.setFillPoints(true);
 	    	renderer.addSeriesRenderer(r);
 	    }
