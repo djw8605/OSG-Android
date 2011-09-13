@@ -20,6 +20,7 @@ public class OSGMapView extends MapActivity {
 	
 	protected boolean isRouteDisplayed() {
 	    return false;
+	    
 	}
 	
 	LinearLayout linearLayout;
