@@ -17,8 +17,6 @@ import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
-import com.osg.osgmon.R;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -31,6 +29,7 @@ import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
+import android.widget.Spinner;
 
 public class OSGSiteUsage  implements OnClickListener, Runnable {
 
@@ -49,12 +48,14 @@ public class OSGSiteUsage  implements OnClickListener, Runnable {
 	
 	public void onClick(View v) {
 		AutoCompleteTextView textView = (AutoCompleteTextView) this.act.findViewById(R.id.autoCompleteTextView1);
-		AutoCompleteTextView vo_textView = (AutoCompleteTextView) this.act.findViewById(R.id.vo_auto_complete);
+		Spinner vo_spinner = (Spinner) this.act.findViewById(R.id.vo_spinner);
+		
 		
 		site = textView.getText().toString();
-		vo = vo_textView.getText().toString();
-		
-		
+		vo = (String) vo_spinner.getAdapter().getItem(vo_spinner.getSelectedItemPosition());
+		if (vo.equals(OSGMonitoring.DEFAULT_VO)) {
+			vo = "";
+		}
 		
 		context = v.getContext();
 		
@@ -144,6 +145,7 @@ public class OSGSiteUsage  implements OnClickListener, Runnable {
 			  site = ".*";
 		  if (vo.equals(""))
 			  vo = ".*";
+		  vo = vo.toLowerCase();
 
 		  try {
 			  
@@ -174,14 +176,18 @@ public class OSGSiteUsage  implements OnClickListener, Runnable {
 						  xy.add((double)d.getTime()/(3600*24*365), Double.parseDouble(entries[2]));
 					  } catch (Exception e) {
 						  System.err.println(e.getMessage());
+						  continue;
 					  } finally {
 						  continue;
 					  }
 				
 					  
 				  }
+				  if (xy != null)
+					  xyseries.addSeries(xy);
 					  
-				  
+			  } catch (Exception e) {
+				  System.err.println(e.getMessage());
 			  } finally {
 				  in.close();
 

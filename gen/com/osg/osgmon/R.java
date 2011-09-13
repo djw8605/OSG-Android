@@ -40,7 +40,7 @@ public final class R {
         public static final int textView2=0x7f05000f;
         public static final int view_map=0x7f05000b;
         public static final int view_monitoring=0x7f05000a;
-        public static final int vo_auto_complete=0x7f050010;
+        public static final int vo_spinner=0x7f050010;
         public static final int webView1=0x7f050007;
     }
     public static final class layout {
@@ -62,6 +62,7 @@ public final class R {
         public static final int sites=0x7f040006;
         public static final int viewmap=0x7f040003;
         public static final int viewmonitoring=0x7f040002;
+        public static final int vo_colon=0x7f04000b;
         public static final int vos=0x7f040007;
     }
 }

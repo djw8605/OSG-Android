@@ -6,8 +6,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import com.osg.osgmon.R;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -19,15 +17,20 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.Spinner;
 
 public class OSGMonitoring extends Activity implements OnClickListener, Runnable {
 	
 	// Graph activity
 	private OSGSiteUsage osg_site_usage = null;
 	
+	public static String DEFAULT_VO = "Select VO";
+	
 	// Pointer to self
 	// Used mostly in the message
 	private Activity osg_monitoring = this;
+	
+	private Spinner vo_spinner = null;
 	
 	public OSGMonitoring() {
 		osg_site_usage = new OSGSiteUsage(this);
@@ -47,8 +50,10 @@ public class OSGMonitoring extends Activity implements OnClickListener, Runnable
 		this.auto_textview = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
 		this.auto_textview.setThreshold(3);
 		
-		this.vo_autotext =  (AutoCompleteTextView) findViewById(R.id.vo_auto_complete);
-		this.vo_autotext.setThreshold(2);
+//		this.vo_autotext =  (AutoCompleteTextView) findViewById(R.id.vo_auto_complete);
+//		this.vo_autotext.setThreshold(2);
+		
+		this.vo_spinner = (Spinner) findViewById(R.id.vo_spinner);
 		
 		Thread sites_thread = new Thread(this);
 		sites_thread.start();
@@ -90,9 +95,12 @@ public class OSGMonitoring extends Activity implements OnClickListener, Runnable
 	Handler sitesMessage = new Handler() {
 		
 		public void handleMessage(Message msg) {
+
 			site_names = (String []) msg.obj;
+
 			ArrayAdapter<String> adapter = new ArrayAdapter<String>(osg_monitoring, R.layout.list_item, site_names);
 			auto_textview.setAdapter(adapter);
+			
 			
 		}
 		
@@ -104,8 +112,22 @@ public class OSGMonitoring extends Activity implements OnClickListener, Runnable
 				StartProgressDialog("Loading VO's...");
 			} else {
 				vo_names = (String []) msg.obj;
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(osg_monitoring, R.layout.list_item2, vo_names);
-				vo_autotext.setAdapter(adapter);
+				
+				String [] default_vo = new String[1];
+				default_vo[0] = OSGMonitoring.DEFAULT_VO;
+				
+				// Get site names from message, and concat with defaults
+				vo_names = (String []) msg.obj;
+				String [] concat_vo_names = new String[vo_names.length + default_vo.length];
+				int i = 0;
+				for (i = 0; i < default_vo.length; i++)
+					concat_vo_names[i] = default_vo[i];
+				for (; i<vo_names.length+default_vo.length; i++)
+					concat_vo_names[i] = vo_names[i-default_vo.length];
+					
+				ArrayAdapter<String> adapter = new ArrayAdapter<String>(osg_monitoring, R.layout.list_item2, concat_vo_names);
+				//vo_autotext.setAdapter(adapter);
+				vo_spinner.setAdapter(adapter);
 			}
 			
 		}

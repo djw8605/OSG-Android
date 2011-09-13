@@ -8,8 +8,8 @@
         <TableRow android:id="@+id/tableRow1" android:layout_width="wrap_content" android:layout_height="wrap_content">
         </TableRow>
         <TableRow android:id="@+id/tableRow2" android:layout_width="wrap_content" android:layout_height="wrap_content">
-            <TextView android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:text="@string/vos" android:id="@+id/textView2" android:layout_height="wrap_content"></TextView>
-            <AutoCompleteTextView android:layout_height="wrap_content" android:text="@string/empty" android:layout_width="100dp" android:id="@+id/vo_auto_complete"></AutoCompleteTextView>
+            <TextView android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:id="@+id/textView2" android:text="@string/vo_colon" android:gravity="center_vertical" android:layout_height="match_parent"></TextView>
+            <Spinner android:id="@+id/vo_spinner" android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_weight="1"></Spinner>
         </TableRow>
         <TableRow android:id="@+id/tableRow3" android:layout_width="wrap_content" android:layout_height="wrap_content">
             <TextView android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:text="@string/site" android:id="@+id/textView1" android:layout_height="wrap_content"></TextView>
