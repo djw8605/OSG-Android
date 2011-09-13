@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.Random;
 
 import org.achartengine.ChartFactory;
+import org.achartengine.model.TimeSeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
@@ -72,7 +73,7 @@ public class OSGSiteUsage  implements OnClickListener, Runnable {
 			
 			XYMultipleSeriesDataset xyseries = (XYMultipleSeriesDataset) msg.obj; 
 			XYMultipleSeriesRenderer xyseriesrender = getDemoRenderer(xyseries.getSeriesCount());
-			Intent intent = ChartFactory.getLineChartIntent(context, xyseries, xyseriesrender, site);
+			Intent intent = ChartFactory.getTimeChartIntent(context, xyseries, xyseriesrender, site);
 			
 			p_dialog.dismiss();
 			
@@ -153,7 +154,7 @@ public class OSGSiteUsage  implements OnClickListener, Runnable {
 			  in = new BufferedReader(new InputStreamReader(vo_url.openStream()));
 			  try {
 				  String vo_key = "";
-				  XYSeries xy = null;
+				  TimeSeries xy = null;
 				  String [] entries = null;
 				  while ((line_buffer = in.readLine()) != null) {
 					  entries = line_buffer.split(",");
@@ -166,13 +167,13 @@ public class OSGSiteUsage  implements OnClickListener, Runnable {
 							  if(xy.getItemCount() > 0)
 								  xyseries.addSeries(xy);
 						  }
-						  xy = new XYSeries(vo_key);
+						  xy = new TimeSeries(vo_key);
 					  }
 					  SimpleDateFormat simple_date = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
 					  Date d = null;
 					  try {
 						  d = simple_date.parse(entries[1], new ParsePosition(0));
-						  xy.add((double)d.getTime()/(3600*24*365), Double.parseDouble(entries[2]));
+						  xy.add(d, Double.parseDouble(entries[2]));
 					  } catch (Exception e) {
 						  System.err.println(e.getMessage());
 						  continue;
