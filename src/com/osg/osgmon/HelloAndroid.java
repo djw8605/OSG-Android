@@ -3,7 +3,6 @@ package com.osg.osgmon;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
@@ -71,7 +70,7 @@ public class HelloAndroid extends Activity implements OnClickListener {
 	protected String CreateStatusDisplay() {
 		// First, get json
 		URL json_url = null;
-		URLConnection urlConnection = null;
+//		URLConnection urlConnection = null;
 		BufferedReader in = null;
 		JSONParser parser=new JSONParser();
 		String line_buf = "";
@@ -80,7 +79,8 @@ public class HelloAndroid extends Activity implements OnClickListener {
 
 		try {
 			json_url = new URL("http://display1.grid.iu.edu/osg_display/display.json");
-			urlConnection = json_url.openConnection();
+			//urlConnection = json_url.openConnection();
+			json_url.openConnection();
 			in = new BufferedReader(new InputStreamReader(json_url.openStream()));
 
 			while ((line_buf = in.readLine()) != null) {

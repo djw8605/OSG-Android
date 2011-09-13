@@ -5,6 +5,6 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="achartengine-0.7.0.jar"/>
 	<classpathentry kind="lib" path="json_simple-1.1.jar"/>
-	<classpathentry kind="src" path="android-mapviewballoons_src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/android-mapviewballoons"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
