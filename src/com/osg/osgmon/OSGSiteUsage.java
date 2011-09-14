@@ -10,7 +10,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
-import org.achartengine.ChartFactory;
+import org.achartengine.GraphicalActivity;
+import org.achartengine.chart.LineChart;
+import org.achartengine.chart.XYChart;
 import org.achartengine.model.TimeSeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
@@ -72,7 +74,14 @@ public class OSGSiteUsage  implements OnClickListener, Runnable {
 			
 			XYMultipleSeriesDataset xyseries = (XYMultipleSeriesDataset) msg.obj; 
 			XYMultipleSeriesRenderer xyseriesrender = getDemoRenderer(xyseries.getSeriesCount());
-			Intent intent = ChartFactory.getTimeChartIntent(context, xyseries, xyseriesrender, site);
+			
+			Intent intent = new Intent(context, GraphicalActivity.class);
+		    XYChart chart = new StackedTimeChart(xyseries, xyseriesrender);
+		    intent.putExtra("chart", chart);
+		    intent.putExtra("title", "");
+		    //act.startActivity(intent);
+		    
+			//Intent intent = ChartFactory.getTimeChartIntent(context, xyseries, xyseriesrender, site);
 			
 			p_dialog.dismiss();
 			
@@ -124,9 +133,10 @@ public class OSGSiteUsage  implements OnClickListener, Runnable {
 	    	r.setColor(color);
 	    	//r.setColor((i*200)+16);
 	    	//r.setPointStyle(PointStyle.SQUARE);
-	    	//r.setFillBelowLine(true);
-	    	//r.setFillBelowLineColor(color);
+	    	r.setFillBelowLine(true);
+	    	r.setFillBelowLineColor(color);
 	    	r.setFillPoints(true);
+	    	r.setLineWidth(5);
 	    	renderer.addSeriesRenderer(r);
 	    }
 
