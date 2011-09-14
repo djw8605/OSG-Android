@@ -10,8 +10,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
+import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalActivity;
-import org.achartengine.chart.LineChart;
+import org.achartengine.GraphicalView;
+import org.achartengine.chart.AbstractChart;
 import org.achartengine.chart.XYChart;
 import org.achartengine.model.TimeSeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
@@ -25,6 +27,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -32,20 +35,40 @@ import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Spinner;
 
-public class OSGSiteUsage  implements OnClickListener, Runnable {
+public class OSGSiteUsage extends Activity implements OnClickListener, Runnable {
 
 	public Context context;
-	
+
 	private Activity act;
+
+	/** The encapsulated graphical view. */
+	private GraphicalView mView;
+	/** The chart to be drawn. */
+	private AbstractChart mChart;
+
+	public OSGSiteUsage() {
+		this.act = this;
+	}
 	
 	public OSGSiteUsage(Activity act) {
 		this.act = act;
-		
+
 	}
-	
+
 	private Thread data_thread;
 	private String site = "";
 	private String vo = "";
+
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Bundle extras = getIntent().getExtras();
+		mChart = (AbstractChart) extras.getSerializable(ChartFactory.CHART);
+		mView = new GraphicalView(this, mChart);
+		
+		setContentView(mView);
+
+	}
+
 	
 	public void onClick(View v) {
 		AutoCompleteTextView textView = (AutoCompleteTextView) this.act.findViewById(R.id.autoCompleteTextView1);
@@ -75,10 +98,12 @@ public class OSGSiteUsage  implements OnClickListener, Runnable {
 			XYMultipleSeriesDataset xyseries = (XYMultipleSeriesDataset) msg.obj; 
 			XYMultipleSeriesRenderer xyseriesrender = getDemoRenderer(xyseries.getSeriesCount());
 			
-			Intent intent = new Intent(context, GraphicalActivity.class);
+			Intent intent = new Intent(context, OSGSiteUsage.class);
 		    XYChart chart = new StackedTimeChart(xyseries, xyseriesrender);
+		   
 		    intent.putExtra("chart", chart);
-		    intent.putExtra("title", "");
+		    //intent.putExtra("title" );
+		    
 		    //act.startActivity(intent);
 		    
 			//Intent intent = ChartFactory.getTimeChartIntent(context, xyseries, xyseriesrender, site);
