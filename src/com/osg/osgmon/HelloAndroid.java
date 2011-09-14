@@ -9,14 +9,14 @@ import java.text.DecimalFormatSymbols;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import com.osg.osgmon.R;
-
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
 
@@ -35,16 +35,23 @@ public class HelloAndroid extends Activity implements OnClickListener {
     	
         
         setContentView(R.layout.main);
+        Configuration conf = findViewById(R.id.tableLayout2).getResources().getConfiguration();
         
         WebView status = (WebView) findViewById(R.id.webView1);
         status.setBackgroundColor(Color.BLACK);
         //String jobs_web = "<html bgcolor=\"black\"><body bgcolor=\"black\"><font color=\"white\">Fake data <p/>Jobs running: 24,000</font></body></html>";
-		
 
-		
-		String status_html = this.CreateStatusDisplay();
         
-		status.loadData(status_html, "text/html", "utf-8");
+        
+        // Check if we're on a tablet
+        if ((conf.screenLayout & Configuration.SCREENLAYOUT_SIZE_XLARGE) == Configuration.SCREENLAYOUT_SIZE_XLARGE) {
+        	WebSettings webSettings = status.getSettings();
+        	webSettings.setJavaScriptEnabled(true);
+        	status.loadUrl("http://display.grid.iu.edu");
+        } else {
+        	String status_html = this.CreateStatusDisplay();
+        	status.loadData(status_html, "text/html", "utf-8");
+        }
         //status.loadData(jobs_web, "text/html", "utf-8");
         //status.getSettings().setJavaScriptEnabled(true);
         //status.loadUrl("http://display.grid.iu.edu/osg_display/jobs_hourly.jpg");
@@ -76,6 +83,9 @@ public class HelloAndroid extends Activity implements OnClickListener {
 		String line_buf = "";
 		String buf = "";
 		String html_src = "";
+		WebView status = (WebView)findViewById(R.id.webView1);
+		
+		
 
 		try {
 			json_url = new URL("http://display1.grid.iu.edu/osg_display/display.json");

@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.Random;
 
 import org.achartengine.ChartFactory;
-import org.achartengine.GraphicalActivity;
 import org.achartengine.GraphicalView;
 import org.achartengine.chart.AbstractChart;
 import org.achartengine.chart.XYChart;
@@ -32,6 +31,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Spinner;
 
@@ -64,6 +64,9 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 		Bundle extras = getIntent().getExtras();
 		mChart = (AbstractChart) extras.getSerializable(ChartFactory.CHART);
 		mView = new GraphicalView(this, mChart);
+		//StackedTimeChart stacked_chart = (StackedTimeChart) mChart;
+		//ViewGroup vg = (ViewGroup) mView.getParent();
+		//vg.removeView(mView);
 		
 		setContentView(mView);
 

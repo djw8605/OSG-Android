@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:weightSum="1">
+    <ImageView android:id="@+id/imageView1" android:src="@drawable/osg_logo" android:layout_height="224dp" android:layout_width="match_parent"></ImageView>
+    <LinearLayout android:id="@+id/linearLayout1" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent">
+        <WebView android:id="@+id/webView1" android:layout_weight="1" android:layout_height="match_parent" android:layout_width="match_parent"></WebView>
+        <TableLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/tableLayout1" android:stretchColumns="*">
+            <TableRow android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/tableRow1">
+                <Button android:text="@string/viewmonitoring" android:layout_height="match_parent" android:layout_width="match_parent" android:id="@+id/view_monitoring"></Button>
+                <Button android:text="@string/viewmap" android:layout_height="match_parent" android:layout_width="match_parent" android:id="@+id/view_map"></Button>
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+</LinearLayout>
