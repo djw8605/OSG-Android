@@ -13,7 +13,6 @@ import java.util.Random;
 import org.achartengine.ChartFactory;
 import org.achartengine.model.TimeSeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
-import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
@@ -115,14 +114,18 @@ public class OSGSiteUsage  implements OnClickListener, Runnable {
 	    renderer.setChartTitleTextSize(20);
 	    renderer.setLabelsTextSize(15);
 	    renderer.setLegendTextSize(15);
+	    
 	    //renderer.setPointSize(5f);
 	    renderer.setMargins(new int[] {20, 30, 15, 0});
 	    XYSeriesRenderer r = new XYSeriesRenderer();
 	    for (int i = 0; i < seriesRequested; i++) {
 	    	r = new XYSeriesRenderer();
-	    	r.setColor(Color.rgb(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256)));
+	    	int color = Color.rgb(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
+	    	r.setColor(color);
 	    	//r.setColor((i*200)+16);
 	    	//r.setPointStyle(PointStyle.SQUARE);
+	    	//r.setFillBelowLine(true);
+	    	//r.setFillBelowLineColor(color);
 	    	r.setFillPoints(true);
 	    	renderer.addSeriesRenderer(r);
 	    }
@@ -135,7 +138,8 @@ public class OSGSiteUsage  implements OnClickListener, Runnable {
 	
 	  
 	  private XYMultipleSeriesDataset GetOSGVOUsage(String site, String vo){
-		  XYMultipleSeriesDataset xyseries = new XYMultipleSeriesDataset();
+		  //XYMultipleSeriesDataset xyseries = new XYMultipleSeriesDataset();
+		  XYMultipleSeriesDataset xyseries = new StackedXYMultipleSeries();
 		  URL vo_url = null;
 		  URLConnection urlConnection = null;
 		  BufferedReader in = null;
