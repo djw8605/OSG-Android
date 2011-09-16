@@ -35,7 +35,7 @@ public class HelloAndroid extends Activity implements OnClickListener {
     	
         
         setContentView(R.layout.main);
-        Configuration conf = findViewById(R.id.tableLayout2).getResources().getConfiguration();
+        //Configuration conf = findViewById(R.id.tableLayout2).getResources().getConfiguration();
         
         WebView status = (WebView) findViewById(R.id.webView1);
         status.setBackgroundColor(Color.BLACK);
@@ -45,14 +45,10 @@ public class HelloAndroid extends Activity implements OnClickListener {
         
         // Check if we're on a tablet
         // NOTE: Configuration class doesn't have xlarge for Android 2.2
-        if ((conf.screenLayout & Configuration.SCREENLAYOUT_SIZE_XLARGE) == Configuration.SCREENLAYOUT_SIZE_XLARGE) {
-        	WebSettings webSettings = status.getSettings();
-        	webSettings.setJavaScriptEnabled(true);
-        	status.loadUrl("http://display.grid.iu.edu");
-        } else {
+        
         	String status_html = this.CreateStatusDisplay();
         	status.loadData(status_html, "text/html", "utf-8");
-        }
+        
         
         
     	Button monitoring_button = (Button)findViewById(R.id.view_monitoring);
