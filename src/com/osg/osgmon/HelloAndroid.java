@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
@@ -44,6 +45,7 @@ public class HelloAndroid extends Activity implements OnClickListener {
         
         
         // Check if we're on a tablet
+        // NOTE: Configuration class doesn't have xlarge for Android 2.2
         if ((conf.screenLayout & Configuration.SCREENLAYOUT_SIZE_XLARGE) == Configuration.SCREENLAYOUT_SIZE_XLARGE) {
         	WebSettings webSettings = status.getSettings();
         	webSettings.setJavaScriptEnabled(true);
