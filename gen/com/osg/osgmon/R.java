@@ -18,7 +18,8 @@ public final class R {
         public static final int icon=0x7f020004;
         public static final int iconbig=0x7f020005;
         public static final int nebraskan=0x7f020006;
-        public static final int osg_logo=0x7f020007;
+        public static final int options=0x7f020007;
+        public static final int osg_logo=0x7f020008;
     }
     public static final class id {
         public static final int autoCompleteTextView1=0x7f050015;
@@ -28,10 +29,15 @@ public final class R {
         public static final int balloon_main_layout=0x7f050000;
         public static final int close_img_button=0x7f050004;
         public static final int confirm_site=0x7f050016;
+        public static final int contentLayout=0x7f05001b;
+        public static final int drawerHandle=0x7f05001a;
         public static final int imageView1=0x7f050005;
         public static final int linearLayout1=0x7f050006;
         public static final int mainlayout=0x7f050010;
         public static final int mapview=0x7f050011;
+        public static final int sliderLinearLayout=0x7f050018;
+        public static final int sliderlayout=0x7f050017;
+        public static final int slidingDrawer=0x7f050019;
         public static final int tableLayout1=0x7f050008;
         public static final int tableLayout2=0x7f05000c;
         public static final int tableRow1=0x7f050009;

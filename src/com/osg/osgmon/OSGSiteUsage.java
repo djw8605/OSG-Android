@@ -24,7 +24,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -46,14 +45,20 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 	/** The chart to be drawn. */
 	private AbstractChart mChart;
 
-	public OSGSiteUsage() {
-		this.act = this;
+	private ViewGroup view_to_append;
+	
+	public OSGSiteUsage(ViewGroup viewGroup) {
+		this.view_to_append = viewGroup;
+		//this.act = this;
 	}
 	
 	public OSGSiteUsage(Activity act) {
 		this.act = act;
 
 	}
+	
+
+	
 
 	private Thread data_thread;
 	private String site = "";
@@ -72,6 +77,16 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 
 	}
 
+	public void updateGraph(Activity act, Context context, String site, String vo) {
+		this.act = act;
+		this.context = context;
+		this.ShowProgressBar();
+		this.site = site;
+		this.vo = vo;
+		this.data_thread = new Thread(this);
+		this.data_thread.start();
+	}
+	
 	
 	public void onClick(View v) {
 		AutoCompleteTextView textView = (AutoCompleteTextView) this.act.findViewById(R.id.autoCompleteTextView1);
@@ -86,10 +101,7 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 		
 		context = v.getContext();
 		
-		this.ShowProgressBar();
 		
-		this.data_thread = new Thread(this);
-		this.data_thread.start();
 		
 	}
 	
@@ -101,10 +113,10 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 			XYMultipleSeriesDataset xyseries = (XYMultipleSeriesDataset) msg.obj; 
 			XYMultipleSeriesRenderer xyseriesrender = getDemoRenderer(xyseries.getSeriesCount());
 			
-			Intent intent = new Intent(context, OSGSiteUsage.class);
-		    XYChart chart = new StackedTimeChart(xyseries, xyseriesrender);
+			//Intent intent = new Intent(context, OSGSiteUsage.class);
+		    //XYChart chart = new StackedTimeChart(xyseries, xyseriesrender);
 		   
-		    intent.putExtra("chart", chart);
+		    //intent.putExtra("chart", chart);
 		    //intent.putExtra("title" );
 		    
 		    //act.startActivity(intent);
@@ -112,8 +124,11 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 			//Intent intent = ChartFactory.getTimeChartIntent(context, xyseries, xyseriesrender, site);
 			
 			p_dialog.dismiss();
-			
-		    act.startActivity(intent);
+			XYChart chart = new StackedTimeChart(xyseries, xyseriesrender);
+			View mView = new GraphicalView(context, chart);
+			view_to_append.removeAllViews();
+			view_to_append.addView(mView);
+		    //act.startActivity(intent);
 		    
 		    
 			
