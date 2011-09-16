@@ -135,6 +135,8 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 			view_to_append.addView(mView);
 			
 		    //act.startActivity(intent);
+			
+			mView.repaint();
 		    
 		    
 			
