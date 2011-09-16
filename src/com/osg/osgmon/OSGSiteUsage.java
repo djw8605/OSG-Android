@@ -31,6 +31,7 @@ import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AutoCompleteTextView;
 import android.widget.Spinner;
 
@@ -46,6 +47,8 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 	private AbstractChart mChart;
 
 	private ViewGroup view_to_append;
+	
+	private View previous_graph_view;
 	
 	public OSGSiteUsage(ViewGroup viewGroup) {
 		this.view_to_append = viewGroup;
@@ -124,10 +127,13 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 			//Intent intent = ChartFactory.getTimeChartIntent(context, xyseries, xyseriesrender, site);
 			
 			p_dialog.dismiss();
+			
 			XYChart chart = new StackedTimeChart(xyseries, xyseriesrender);
-			View mView = new GraphicalView(context, chart);
+			GraphicalView mView = new GraphicalView(context, chart);
+
 			view_to_append.removeAllViews();
 			view_to_append.addView(mView);
+			
 		    //act.startActivity(intent);
 		    
 		    
