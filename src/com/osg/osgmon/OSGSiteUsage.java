@@ -48,7 +48,7 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 
 	private ViewGroup view_to_append;
 	
-	private View previous_graph_view;
+	private GraphicalView current_view;
 	
 	public OSGSiteUsage(ViewGroup viewGroup) {
 		this.view_to_append = viewGroup;
@@ -133,7 +133,7 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 
 			view_to_append.removeAllViews();
 			view_to_append.addView(mView);
-			
+			current_view = mView;
 		    //act.startActivity(intent);
 			
 			mView.repaint();
@@ -294,6 +294,11 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 		  
 	  }
 
+	  public void redraw() {
+		  if (this.current_view != null)
+			  this.current_view.repaint();
+		  
+	  }
 
 	
 	

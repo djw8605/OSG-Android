@@ -12,6 +12,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,9 +22,10 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.SlidingDrawer;
+import android.widget.SlidingDrawer.OnDrawerCloseListener;
 import android.widget.Spinner;
 
-public class OSGMonitoringActivity extends Activity implements OnClickListener, Runnable {
+public class OSGMonitoringActivity extends Activity implements OnClickListener, Runnable, OnDrawerCloseListener {
 	
 	// Graph activity
 	private OSGSiteUsage osg_site_usage = null;
@@ -73,8 +75,22 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		ViewGroup slider_view = (ViewGroup) findViewById(R.id.contentLayout);
 		slider_view.setBackgroundColor(Color.rgb(255, 127, 0));
 		
+		// Open the slider when the screen is shown for the first time.
+		SlidingDrawer sd = (SlidingDrawer) findViewById(R.id.slidingDrawer);
+		sd.animateOpen();
+		sd.setOnDrawerCloseListener(this);
+		
 		//lc.drawSeries(draw_canvas, paint_canvas, stuff, new XYSeriesRenderer(), (float)15.0, 0);
 		
+		
+	}
+	
+	public void onDrawerClosed() {
+		Context context = findViewById(R.id.sliderlayout).getContext();
+		InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE); 
+		IBinder focus_binder = findViewById(R.id.sliderlayout).getWindowToken();
+		inputManager.hideSoftInputFromWindow(focus_binder, InputMethodManager.HIDE_NOT_ALWAYS);
+		osg_site_usage.redraw();
 		
 	}
 	
