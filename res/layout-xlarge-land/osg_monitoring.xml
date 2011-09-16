@@ -18,8 +18,7 @@
 		android:id="@+id/slidingDrawer"
 		android:handle="@+id/drawerHandle"
 		android:content="@+id/contentLayout"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content">	
+		android:layout_height="wrap_content" android:layout_width="400dp">	
 
 		<ImageView
 			android:id="@+id/drawerHandle"
