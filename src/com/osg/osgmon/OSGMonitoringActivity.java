@@ -8,6 +8,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -66,6 +67,9 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		
 		ViewGroup slider_view_group = (ViewGroup) findViewById(R.id.sliderlayout);
 		osg_site_usage = new OSGSiteUsage(slider_view_group);
+		
+		ViewGroup slider_view = (ViewGroup) findViewById(R.id.contentLayout);
+		slider_view.setBackgroundColor(Color.rgb(255, 127, 0));
 		
 		//lc.drawSeries(draw_canvas, paint_canvas, stuff, new XYSeriesRenderer(), (float)15.0, 0);
 		
@@ -154,7 +158,7 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 	public void onClick(View v) {
 		
 		SlidingDrawer sd = (SlidingDrawer) findViewById(R.id.slidingDrawer);
-		sd.toggle();
+		sd.animateClose();
 		AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
 		Spinner vo_spinner = (Spinner) findViewById(R.id.vo_spinner);
 		
@@ -167,6 +171,8 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		
 		
 		osg_site_usage.updateGraph(this, v.getContext(), site, vo);
+		
+		
 		
 		//Intent osg_monitoring_intent = new Intent(v.getContext(), OSGMonitoringActivity.class);
 		//v.getContext().startActivity(osg_monitoring_intent);
