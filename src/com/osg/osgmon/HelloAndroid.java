@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
@@ -23,14 +22,14 @@ import android.widget.Button;
 
 public class HelloAndroid extends Activity implements OnClickListener {
 	
-	public OSGMonitoring osg_monitoring;
+	public OSGMonitoringActivity osg_monitoring;
 	
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	
-    	this.osg_monitoring = new OSGMonitoring();
+    	this.osg_monitoring = new OSGMonitoringActivity();
     	
     	super.onCreate(savedInstanceState);
     	
@@ -54,12 +53,10 @@ public class HelloAndroid extends Activity implements OnClickListener {
         	String status_html = this.CreateStatusDisplay();
         	status.loadData(status_html, "text/html", "utf-8");
         }
-        //status.loadData(jobs_web, "text/html", "utf-8");
-        //status.getSettings().setJavaScriptEnabled(true);
-        //status.loadUrl("http://display.grid.iu.edu/osg_display/jobs_hourly.jpg");
+        
         
     	Button monitoring_button = (Button)findViewById(R.id.view_monitoring);
-    	monitoring_button.setOnClickListener(this.osg_monitoring);
+    	monitoring_button.setOnClickListener(this);
     	
     	Button map_button = (Button)findViewById(R.id.view_map);
     	map_button.setOnClickListener(this);
@@ -72,6 +69,11 @@ public class HelloAndroid extends Activity implements OnClickListener {
 			Intent osg_map_intent = new Intent(v.getContext(), OSGMapView.class);
 			v.getContext().startActivity(osg_map_intent);
 			
+		} else if (v.getId() == R.id.view_monitoring) {
+			
+			Intent osg_monitoring_intent = new Intent(v.getContext(), OSGMonitoringActivity.class);
+			v.getContext().startActivity(osg_monitoring_intent);
+			
 		}
 		
 	}
@@ -79,13 +81,11 @@ public class HelloAndroid extends Activity implements OnClickListener {
 	protected String CreateStatusDisplay() {
 		// First, get json
 		URL json_url = null;
-//		URLConnection urlConnection = null;
 		BufferedReader in = null;
 		JSONParser parser=new JSONParser();
 		String line_buf = "";
 		String buf = "";
 		String html_src = "";
-		WebView status = (WebView)findViewById(R.id.webView1);
 		
 		
 

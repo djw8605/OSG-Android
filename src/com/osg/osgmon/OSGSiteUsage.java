@@ -80,7 +80,7 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 		
 		site = textView.getText().toString();
 		vo = (String) vo_spinner.getAdapter().getItem(vo_spinner.getSelectedItemPosition());
-		if (vo.equals(OSGMonitoring.DEFAULT_VO)) {
+		if (vo.equals(OSGMonitoringActivity.DEFAULT_VO)) {
 			vo = "";
 		}
 		
