@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.view.MotionEvent;
 
 public class SelectableGraphicalView extends GraphicalView {
@@ -32,9 +33,12 @@ public class SelectableGraphicalView extends GraphicalView {
 	
 	public boolean onTouchEvent(MotionEvent event) {
 		
+		//this.invalidate(new Rect((int)selectedX, 1000, (int)(selectedX + 1), 0));
 		selectedX = event.getX();
 	    selectedY = event.getY();
+	    //this.invalidate(new Rect((int)selectedX, 1000, (int)(selectedX + 1), 0));
 		this.invalidate();
+		
 	    
 	    
 		return true;

@@ -7,6 +7,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Random;
 
@@ -28,10 +31,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 
 public class OSGSiteUsage extends Activity implements OnClickListener, Runnable {
@@ -197,6 +198,7 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 	  private XYMultipleSeriesDataset GetOSGVOUsage(String site, String vo){
 		  //XYMultipleSeriesDataset xyseries = new XYMultipleSeriesDataset();
 		  XYMultipleSeriesDataset xyseries = new StackedXYMultipleSeries();
+		  ArrayList<TimeSeries> list_series = new ArrayList<TimeSeries>();
 		  URL vo_url = null;
 		  URLConnection urlConnection = null;
 		  BufferedReader in = null;
@@ -226,7 +228,8 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 						  vo_key = entries[0];
 						  if (xy != null) {
 							  if(xy.getItemCount() > 0)
-								  xyseries.addSeries(xy);
+								  list_series.add(xy);
+								  //xyseries.addSeries(xy);
 						  }
 						  xy = new TimeSeries(vo_key);
 					  }
@@ -244,8 +247,10 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 				
 					  
 				  }
-				  if (xy != null)
-					  xyseries.addSeries(xy);
+				  if (xy != null) {
+					  list_series.add(xy);
+					  //xyseries.addSeries(xy);
+				  }
 					  
 			  } catch (Exception e) {
 				  System.err.println(e.getMessage());
@@ -269,10 +274,22 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 		  }
 		  
 		 
+		  // Now limit to the top X series
+		  Collections.sort(list_series, new CustomComparator());
+		  for (int i = 0; list_series.size() > 10; i++) {
+			  list_series.remove(0);
+		  }
+		  for (int i = 0; i < list_series.size(); i++)
+			  xyseries.addSeries(list_series.get(i));
 		  
 		  return xyseries;
 	  }
 
+	  public class CustomComparator implements Comparator<TimeSeries> {
+		    public int compare(TimeSeries o1, TimeSeries o2) {
+		        return Double.compare(o1.getMaxY(), o2.getMaxY());
+		    }
+		}
 
 	  private void ErrorDialog(String message) {
 		  
