@@ -23,20 +23,23 @@
 		android:id="@+id/slidingDrawer"
 		android:handle="@+id/drawerHandle"
 		android:content="@+id/contentLayout"
-		android:layout_height="wrap_content" android:layout_width="400dp">	
+		android:layout_height="fill_parent" android:layout_width="400dp" android:layout_gravity="right">	
 
 		<ImageView
 			android:id="@+id/drawerHandle"
 			android:src="@drawable/options"
 			android:layout_width="fill_parent"
-			android:layout_height="wrap_content">
+			android:layout_height="wrap_content"
+			android:background="#000">
 		</ImageView>
 
 		<LinearLayout
 			xmlns:android="http://schemas.android.com/apk/res/android"
 			android:id="@+id/contentLayout"
 			android:layout_width="fill_parent"
-			android:layout_height="wrap_content">
+			android:layout_height="wrap_content"
+			android:background="@drawable/slide_background"
+			android:padding="10dp">
 			
 			
 			<TableLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/tableLayout1">

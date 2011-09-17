@@ -9,13 +9,14 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -23,9 +24,10 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.SlidingDrawer;
 import android.widget.SlidingDrawer.OnDrawerCloseListener;
+import android.widget.SlidingDrawer.OnDrawerOpenListener;
 import android.widget.Spinner;
 
-public class OSGMonitoringActivity extends Activity implements OnClickListener, Runnable, OnDrawerCloseListener {
+public class OSGMonitoringActivity extends Activity implements OnClickListener, Runnable, OnDrawerCloseListener, OnDrawerOpenListener {
 	
 	// Graph activity
 	private OSGSiteUsage osg_site_usage = null;
@@ -57,6 +59,17 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		
 		this.auto_textview = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
 		this.auto_textview.setThreshold(2);
+		this.auto_textview.setOnKeyListener(new OnKeyListener() {
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+				            (keyCode == KeyEvent.KEYCODE_ENTER)) {
+					 onClick(auto_textview);
+					 return true;
+				 }
+
+				return false;
+			}
+		});
 		
 //		this.vo_autotext =  (AutoCompleteTextView) findViewById(R.id.vo_auto_complete);
 //		this.vo_autotext.setThreshold(2);
@@ -72,13 +85,11 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		ViewGroup slider_view_group = (ViewGroup) findViewById(R.id.sliderlayout);
 		osg_site_usage = new OSGSiteUsage(slider_view_group);
 		
-		ViewGroup slider_view = (ViewGroup) findViewById(R.id.contentLayout);
-		slider_view.setBackgroundColor(Color.rgb(255, 127, 0));
-		
 		// Open the slider when the screen is shown for the first time.
 		SlidingDrawer sd = (SlidingDrawer) findViewById(R.id.slidingDrawer);
 		sd.animateOpen();
 		sd.setOnDrawerCloseListener(this);
+		sd.setOnDrawerOpenListener(this);
 		
 		//lc.drawSeries(draw_canvas, paint_canvas, stuff, new XYSeriesRenderer(), (float)15.0, 0);
 		
@@ -91,6 +102,11 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		IBinder focus_binder = findViewById(R.id.sliderlayout).getWindowToken();
 		inputManager.hideSoftInputFromWindow(focus_binder, InputMethodManager.HIDE_NOT_ALWAYS);
 		osg_site_usage.redraw();
+		
+	}
+	
+	public void onDrawerOpened() {
+		this.auto_textview.selectAll();
 		
 	}
 	
@@ -236,6 +252,8 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		  return osg_parser.GetSites();
 
 	  }
+
+
 	  
 }
 
