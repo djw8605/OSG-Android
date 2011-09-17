@@ -72,9 +72,6 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		ViewGroup slider_view_group = (ViewGroup) findViewById(R.id.sliderlayout);
 		osg_site_usage = new OSGSiteUsage(slider_view_group);
 		
-		ViewGroup slider_view = (ViewGroup) findViewById(R.id.contentLayout);
-		slider_view.setBackgroundColor(Color.rgb(255, 127, 0));
-		
 		// Open the slider when the screen is shown for the first time.
 		SlidingDrawer sd = (SlidingDrawer) findViewById(R.id.slidingDrawer);
 		sd.animateOpen();
