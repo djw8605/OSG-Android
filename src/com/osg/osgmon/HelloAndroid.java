@@ -45,15 +45,8 @@ public class HelloAndroid extends Activity implements OnClickListener {
         
         // Check if we're on a tablet
         // NOTE: Configuration class doesn't have xlarge for Android 2.2
-        Configuration conf = findViewById(R.id.tableLayout2).getResources().getConfiguration();
-        if ((conf.screenLayout & Configuration.SCREENLAYOUT_SIZE_XLARGE) == Configuration.SCREENLAYOUT_SIZE_XLARGE) {
-        	WebSettings webSettings = status.getSettings();
-        	webSettings.setJavaScriptEnabled(true);
-        	status.loadUrl("http://display.grid.iu.edu");
-        } else {
         	String status_html = this.CreateStatusDisplay();
         	status.loadData(status_html, "text/html", "utf-8");
-        }
 
         
         
