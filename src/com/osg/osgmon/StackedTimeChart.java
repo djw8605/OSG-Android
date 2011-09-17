@@ -9,6 +9,8 @@ import org.achartengine.renderer.XYSeriesRenderer;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.view.MotionEvent;
+import android.view.View;
 
 public class StackedTimeChart extends TimeChart {
 
@@ -86,6 +88,9 @@ public class StackedTimeChart extends TimeChart {
 		      right-=2;
 		   }
 		}
+	
+	
+	
 	
 }
 

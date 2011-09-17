@@ -23,7 +23,7 @@
 		android:id="@+id/slidingDrawer"
 		android:handle="@+id/drawerHandle"
 		android:content="@+id/contentLayout"
-		android:layout_height="fill_parent" android:layout_width="400dp">	
+		android:layout_height="fill_parent" android:layout_width="400dp" android:layout_gravity="right">	
 
 		<ImageView
 			android:id="@+id/drawerHandle"

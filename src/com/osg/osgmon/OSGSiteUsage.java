@@ -28,12 +28,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.AutoCompleteTextView;
-import android.widget.Spinner;
 
 public class OSGSiteUsage extends Activity implements OnClickListener, Runnable {
 
@@ -49,6 +48,8 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 	private ViewGroup view_to_append;
 	
 	private GraphicalView current_view;
+	
+	public OSGSiteUsage this_ptr = this;
 	
 	public OSGSiteUsage(ViewGroup viewGroup) {
 		this.view_to_append = viewGroup;
@@ -92,21 +93,14 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 	
 	
 	public void onClick(View v) {
-		AutoCompleteTextView textView = (AutoCompleteTextView) this.act.findViewById(R.id.autoCompleteTextView1);
-		Spinner vo_spinner = (Spinner) this.act.findViewById(R.id.vo_spinner);
 		
-		
-		site = textView.getText().toString();
-		vo = (String) vo_spinner.getAdapter().getItem(vo_spinner.getSelectedItemPosition());
-		if (vo.equals(OSGMonitoringActivity.DEFAULT_VO)) {
-			vo = "";
+		if(v.getId() == this.current_view.getId()) {
+			
 		}
-		
-		context = v.getContext();
-		
-		
-		
+
 	}
+	
+
 	
 	
 	Handler usage_handler = new Handler() {
@@ -129,10 +123,12 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 			p_dialog.dismiss();
 			
 			XYChart chart = new StackedTimeChart(xyseries, xyseriesrender);
-			GraphicalView mView = new GraphicalView(context, chart);
+			GraphicalView mView = new SelectableGraphicalView(context, chart);
 
 			view_to_append.removeAllViews();
 			view_to_append.addView(mView);
+			mView.setId(1);
+			//mView.setOnClickListener(this_ptr);
 			current_view = mView;
 		    //act.startActivity(intent);
 			
