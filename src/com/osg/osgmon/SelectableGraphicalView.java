@@ -33,14 +33,10 @@ public class SelectableGraphicalView extends GraphicalView {
 	
 	public boolean onTouchEvent(MotionEvent event) {
 		
-		//this.invalidate(new Rect((int)selectedX, 1000, (int)(selectedX + 1), 0));
 		selectedX = event.getX();
 	    selectedY = event.getY();
-	    //this.invalidate(new Rect((int)selectedX, 1000, (int)(selectedX + 1), 0));
 		this.invalidate();
-		
-	    
-	    
+
 		return true;
 	}
 
