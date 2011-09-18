@@ -14,6 +14,9 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
@@ -110,6 +113,26 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		
 	}
 	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.osg_monitoring_menu, menu);
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	    case R.id.refresh:
+	    	//View v = findViewById(R.id.confirm_site);
+	        this.updateGraph();
+	        return true;
+	    default:
+	        return super.onOptionsItemSelected(item);
+	    }
+	}
+	
 	private ProgressDialog p_dialog;
 	
 	private String [] site_names;
@@ -195,6 +218,11 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 		SlidingDrawer sd = (SlidingDrawer) findViewById(R.id.slidingDrawer);
 		sd.animateClose();
+		updateGraph();
+	}
+	
+	public void updateGraph() {
+		
 		AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
 		Spinner vo_spinner = (Spinner) findViewById(R.id.vo_spinner);
 		
@@ -206,7 +234,7 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		}
 		
 		
-		osg_site_usage.updateGraph(this, v.getContext(), site, vo);
+		osg_site_usage.updateGraph(this, vo_spinner.getContext(), site, vo);
 		
 		
 		
