@@ -242,7 +242,7 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 				  try {
 					  progress += line_buffer.length();
 					  int tmp_progress =  (int) ( ((float)progress /  (float)content_length )*100.0);
-					  if (tmp_progress != previous_counter) {
+					  if (tmp_progress != previous_counter+5) {
 						  msg = Message.obtain(this.usage_progress_handler);
 						  msg.arg1 = tmp_progress;
 						  msg.sendToTarget();
