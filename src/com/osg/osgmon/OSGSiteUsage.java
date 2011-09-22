@@ -149,6 +149,7 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 				p_dialog.setMessage((String)msg.obj);
 			}
 			p_dialog.setProgress(msg.arg1);
+			
 
 		}
 	};

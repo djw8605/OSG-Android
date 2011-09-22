@@ -22,7 +22,7 @@ public class OSGSiteXMLParser implements ContentHandler {
 	
 	public void startElement(String uri, String localName, String qName, Attributes atts) {
 		
-		if (qName.equals("Name")) {
+		if (qName.equals("GroupName")) {
 			reading_name = true;
 			
 		}
