@@ -1,6 +1,7 @@
 package com.osg.osgmon;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.xml.sax.InputSource;
@@ -9,6 +10,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.LinearLayout;
 
 import com.google.android.maps.GeoPoint;
@@ -44,6 +47,7 @@ public class OSGMapView extends MapActivity {
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		
+		/*
 		mapOverlays = mapView.getOverlays();
 		drawable = this.getResources().getDrawable(R.drawable.nebraskan);
 		itemizedOverlay = new OSGSiteItemizedOverlay(drawable, mapView);
@@ -53,8 +57,25 @@ public class OSGMapView extends MapActivity {
 		overlayitem.setMarker(drawable);
 		itemizedOverlay.addOverlay(overlayitem);
 		mapOverlays.add(itemizedOverlay);
-		
+		*/
 	}
+	
+	public Handler parseHandler = new Handler() {
+		
+		public void handleMessage(Message msg) {
+			mapOverlays = mapView.getOverlays();
+			drawable = getResources().getDrawable(R.drawable.icon);
+			itemizedOverlay = new OSGSiteItemizedOverlay(drawable, mapView);
+			
+			ArrayList<OverlayItem> overlayitems = (ArrayList<OverlayItem>) msg.obj;
+			for (int i = 0; i < overlayitems.size(); i++)
+				itemizedOverlay.addOverlay(overlayitems.get(i));
+			
+			mapOverlays.add(itemizedOverlay);
+		}
+		
+		
+	};
 
 	public void ParseSites() {
 		
@@ -72,6 +93,10 @@ public class OSGMapView extends MapActivity {
 				} catch (Exception e) {
 					System.err.println(e.getMessage());
 				}
+				
+				Message msg = Message.obtain(parseHandler);
+				msg.obj = osg_parser.getOverlays();
+				msg.sendToTarget();
 				
 			}
 			

@@ -17,6 +17,16 @@ public class OSGSiteMapParser implements ContentHandler {
 	protected float log = 0;
 	protected String siteName;
 	protected String current_path = null;
+	protected boolean read_site = false;
+	
+	
+	public OSGSiteMapParser() {
+		this.LatLogSite = new ArrayList<MapSiteElement>();
+	}
+	
+	public ArrayList<MapSiteElement> getOverlays() {
+		return this.LatLogSite;
+	}
 	
 	public void characters(char[] arg0, int arg1, int arg2) throws SAXException {
 		// TODO Auto-generated method stub
@@ -24,6 +34,10 @@ public class OSGSiteMapParser implements ContentHandler {
 			lat = Float.parseFloat(new String(arg0));
 		else if (ReadingLog)
 			log = Float.parseFloat(new String(arg0));
+		else if (ReadingName) {
+			siteName = new String(arg0);
+			this.read_site = false;
+		}
 		
 	}
 
@@ -34,8 +48,6 @@ public class OSGSiteMapParser implements ContentHandler {
 
 	public void endElement(String arg0, String arg1, String arg2)
 			throws SAXException {
-		// TODO Auto-generated method stub
-		this.current_path =  this.current_path.split(".");
 		
 		if (ReadingLat)
 			ReadingLat = false;
@@ -44,7 +56,8 @@ public class OSGSiteMapParser implements ContentHandler {
 		if (ReadingName)
 			ReadingName = false;
 		
-		if (arg0.equals("Name")) {
+		if (arg1.equals("Site")) {
+			this.LatLogSite.add(new MapSiteElement(this.siteName, this.lat, this.log));
 			
 		}
 
@@ -88,7 +101,18 @@ public class OSGSiteMapParser implements ContentHandler {
 			Attributes atts) throws SAXException {
 		// TODO Auto-generated method stub
 		
-		this.current_path += "." + qName;
+		if (qName.equals("Site")) {
+			this.read_site = true;
+		} else if (qName.equals("Latitude")) {
+			this.ReadingLat = true;
+		} else if (qName.equals("Longitude")) {
+			this.ReadingLog = true;
+		}
+		
+		if (qName.equals("Name") && this.read_site) {
+			this.ReadingName = true;
+			
+		}
 
 	}
 
