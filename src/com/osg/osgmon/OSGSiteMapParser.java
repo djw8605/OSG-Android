@@ -28,14 +28,14 @@ public class OSGSiteMapParser implements ContentHandler {
 		return this.LatLogSite;
 	}
 	
-	public void characters(char[] arg0, int arg1, int arg2) throws SAXException {
+	public void characters(char[] arg0, int start, int length) throws SAXException {
 		// TODO Auto-generated method stub
 		if (ReadingLat)
-			lat = Float.parseFloat(new String(arg0));
+			lat = Float.parseFloat(new String(arg0, start, length));
 		else if (ReadingLog)
-			log = Float.parseFloat(new String(arg0));
+			log = Float.parseFloat(new String(arg0, start, length));
 		else if (ReadingName) {
-			siteName = new String(arg0);
+			siteName = new String(arg0, start, length);
 			this.read_site = false;
 		}
 		
