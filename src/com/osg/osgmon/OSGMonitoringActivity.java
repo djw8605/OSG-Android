@@ -72,6 +72,7 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 	    	this.vo_spinner.setAdapter(data.getVOsAdapter());
 	    	this.vo_spinner.setSelection(data.getVOsSelected());
 	    	
+	    	// Slider drawer doesn't work right.
 	    	SlidingDrawer sd = (SlidingDrawer) findViewById(R.id.slidingDrawer);
 	    	if (data.getSliderOpen())
 	    		sd.open();
