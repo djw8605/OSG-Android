@@ -63,6 +63,8 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 	    if (data == null) {
 	    	// Start the data thread
 	    	StartProgressDialog("Loading Sites...");
+	    	SlidingDrawer sd = (SlidingDrawer) findViewById(R.id.slidingDrawer);
+	    	sd.animateOpen();
 	    	Thread sites_thread = new Thread(this);
 			sites_thread.start();
 	    } else {
@@ -121,7 +123,7 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 
 		// Open the slider when the screen is shown for the first time.
 		SlidingDrawer sd = (SlidingDrawer) findViewById(R.id.slidingDrawer);
-		sd.animateOpen();
+		
 		sd.setOnDrawerCloseListener(this);
 		sd.setOnDrawerOpenListener(this);
 		
