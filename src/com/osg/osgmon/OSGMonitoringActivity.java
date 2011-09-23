@@ -56,12 +56,46 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.osg_monitoring);
 		
+		this.initializeAutocompletes();
+		
+		// Load the data from a configuration (orientation...) change
+		final MonitoringActivitySavedState data = (MonitoringActivitySavedState) getLastNonConfigurationInstance();
+	    if (data == null) {
+	    	// Start the data thread
+	    	StartProgressDialog("Loading Sites...");
+	    	Thread sites_thread = new Thread(this);
+			sites_thread.start();
+	    } else {
+	    	// Load in the data from the saved state.
+	    	this.auto_textview.setAdapter((ArrayAdapter) data.getSitesAdapter());
+	    	this.auto_textview.setText(data.getSitesText());
+	    	this.vo_spinner.setAdapter(data.getVOsAdapter());
+	    	this.vo_spinner.setSelection(data.getVOsSelected());
+	    	
+	    	SlidingDrawer sd = (SlidingDrawer) findViewById(R.id.slidingDrawer);
+	    	if (data.getSliderOpen())
+	    		sd.open();
+	    	else
+	    		sd.close();
+	    	
+	    	this.updateGraph();
+	    }
 		
 		
-		StartProgressDialog("Loading Sites...");
+	}
+		
+	/**
+	 * This function will only be called the first time the activity is shown
+	 * 
+	 * 
+	 */
+	protected void initializeAutocompletes() {
+		
 		
 		this.auto_textview = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
 		this.auto_textview.setThreshold(2);
+		
+		// Ignore enter key
 		this.auto_textview.setOnKeyListener(new OnKeyListener() {
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
 				 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
@@ -74,31 +108,39 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 			}
 		});
 		
-//		this.vo_autotext =  (AutoCompleteTextView) findViewById(R.id.vo_auto_complete);
-//		this.vo_autotext.setThreshold(2);
-		
 		this.vo_spinner = (Spinner) findViewById(R.id.vo_spinner);
 		
-		Thread sites_thread = new Thread(this);
-		sites_thread.start();
+		
 		
 		Button get_usage_button = (Button) findViewById(R.id.confirm_site);
 		get_usage_button.setOnClickListener(this);
 		
 		ViewGroup slider_view_group = (ViewGroup) findViewById(R.id.sliderlayout);
 		osg_site_usage = new OSGSiteUsage(slider_view_group);
-		
+
 		// Open the slider when the screen is shown for the first time.
 		SlidingDrawer sd = (SlidingDrawer) findViewById(R.id.slidingDrawer);
 		sd.animateOpen();
 		sd.setOnDrawerCloseListener(this);
 		sd.setOnDrawerOpenListener(this);
 		
-		//lc.drawSeries(draw_canvas, paint_canvas, stuff, new XYSeriesRenderer(), (float)15.0, 0);
-		
-		
 	}
 	
+	/**
+	 * Save the current state of the activity
+	 * 
+	 */
+	 public Object onRetainNonConfigurationInstance() {
+	    MonitoringActivitySavedState saved_state = new MonitoringActivitySavedState();
+	    SlidingDrawer sd = (SlidingDrawer) findViewById(R.id.slidingDrawer);
+	    saved_state.setSliderOpen(sd.isOpened());
+	    saved_state.setSitesAdapter(this.auto_textview.getAdapter());
+	    saved_state.setSitesText(this.auto_textview.getText().toString());
+	    saved_state.setVOsAdapter(this.vo_spinner.getAdapter());
+	    saved_state.setVOsSelected(this.vo_spinner.getSelectedItemPosition());
+	    return saved_state;
+	 }
+
 	public void onDrawerClosed() {
 		Context context = findViewById(R.id.sliderlayout).getContext();
 		InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE); 
