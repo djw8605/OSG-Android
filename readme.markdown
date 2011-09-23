@@ -17,7 +17,7 @@ I use Eclipse for development.  To import the project, download from github:
 
     git clone https://djw8605@github.com/djw8605/OSG-Android.git
 
-You also need the dependency library [android-mapviewballoons](https://github.com/jgilfelt/android-mapviewballoons).  
+You also need the dependency library [android-mapviewballoons](https://github.com/jgilfelt/android-mapviewballoons).
 It's available on github as well.
 
 Import the mapviewballoons in as an android library.  Documentation is 
