@@ -52,6 +52,8 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 	
 	public OSGSiteUsage this_ptr = this;
 	
+	protected XYMultipleSeriesDataset current_data;
+	
 	public OSGSiteUsage(ViewGroup viewGroup) {
 		this.view_to_append = viewGroup;
 		//this.act = this;
@@ -63,7 +65,9 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 	}
 	
 
-	
+	public XYMultipleSeriesDataset getCurrentData() {
+		return this.current_data;
+	}
 
 	private Thread data_thread;
 	private String site = "";
@@ -92,6 +96,13 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 		this.data_thread.start();
 	}
 	
+	public void updateGraph(Activity act, Context context, XYMultipleSeriesDataset current_data) {
+		this.act = act;
+		this.context = context;
+		createChart(current_data);
+		
+	}
+	
 	
 	public void onClick(View v) {
 		
@@ -102,40 +113,31 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 	}
 	
 
-	
+	protected void createChart(XYMultipleSeriesDataset xyseries) {
+		this.current_data = xyseries;
+		XYMultipleSeriesRenderer xyseriesrender = getDemoRenderer(xyseries.getSeriesCount());
+		XYChart chart = new StackedTimeChart(xyseries, xyseriesrender);
+		GraphicalView mView = new SelectableGraphicalView(context, chart);
+
+		view_to_append.removeAllViews();
+		view_to_append.addView(mView);
+		mView.setId(1);
+		//mView.setOnClickListener(this_ptr);
+		current_view = mView;
+	    //act.startActivity(intent);
+		
+		mView.repaint();
+		
+	}
 	
 	Handler usage_handler = new Handler() {
 		
 		public void handleMessage(Message msg) {
 			
 			XYMultipleSeriesDataset xyseries = (XYMultipleSeriesDataset) msg.obj; 
-			XYMultipleSeriesRenderer xyseriesrender = getDemoRenderer(xyseries.getSeriesCount());
-			
-			//Intent intent = new Intent(context, OSGSiteUsage.class);
-		    //XYChart chart = new StackedTimeChart(xyseries, xyseriesrender);
-		   
-		    //intent.putExtra("chart", chart);
-		    //intent.putExtra("title" );
-		    
-		    //act.startActivity(intent);
-		    
-			//Intent intent = ChartFactory.getTimeChartIntent(context, xyseries, xyseriesrender, site);
 			
 			p_dialog.dismiss();
-			
-			XYChart chart = new StackedTimeChart(xyseries, xyseriesrender);
-			GraphicalView mView = new SelectableGraphicalView(context, chart);
-
-			view_to_append.removeAllViews();
-			view_to_append.addView(mView);
-			mView.setId(1);
-			//mView.setOnClickListener(this_ptr);
-			current_view = mView;
-		    //act.startActivity(intent);
-			
-			mView.repaint();
-		    
-		    
+			createChart(xyseries);
 			
 		}
 		

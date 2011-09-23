@@ -1,5 +1,7 @@
 package com.osg.osgmon;
 
+import org.achartengine.model.XYMultipleSeriesDataset;
+
 import android.widget.ListAdapter;
 import android.widget.SpinnerAdapter;
 
@@ -50,6 +52,14 @@ public class MonitoringActivitySavedState {
 	}
 	public int getVOsSelected() {
 		return this.vo_selected;
+	}
+	
+	protected XYMultipleSeriesDataset chart_data;
+	public void setChartData(XYMultipleSeriesDataset chart_data) {
+		this.chart_data = chart_data;
+	}
+	public XYMultipleSeriesDataset getChartData() {
+		return this.chart_data;
 	}
 	
 }

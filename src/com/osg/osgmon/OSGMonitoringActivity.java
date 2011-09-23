@@ -74,6 +74,7 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 	    	this.vo_spinner.setAdapter(data.getVOsAdapter());
 	    	this.vo_spinner.setSelection(data.getVOsSelected());
 	    	
+	    	
 	    	// Slider drawer doesn't work right.
 	    	SlidingDrawer sd = (SlidingDrawer) findViewById(R.id.slidingDrawer);
 	    	if (data.getSliderOpen())
@@ -81,7 +82,10 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 	    	else
 	    		sd.close();
 	    	
-	    	this.updateGraph();
+	    	if (data.getChartData() != null)
+	    		this.osg_site_usage.updateGraph(this, sd.getContext(), data.getChartData());
+	    	
+	    	//this.updateGraph();
 	    }
 		
 		
@@ -141,6 +145,7 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 	    saved_state.setSitesText(this.auto_textview.getText().toString());
 	    saved_state.setVOsAdapter(this.vo_spinner.getAdapter());
 	    saved_state.setVOsSelected(this.vo_spinner.getSelectedItemPosition());
+	    saved_state.setChartData(this.osg_site_usage.getCurrentData());
 	    return saved_state;
 	 }
 
