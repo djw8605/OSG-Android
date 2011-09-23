@@ -315,7 +315,7 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 	  }
 
 	  private String [] GetVOs() {
-		  OSGSiteXMLParser osg_parser = new OSGSiteXMLParser();
+		  OSGVOXMLParser osg_parser = new OSGVOXMLParser();
 
 		  String url = "http://myosg.grid.iu.edu/vosummary/xml?all_vos=on&active=on&active_value=1&datasource=summary";
 

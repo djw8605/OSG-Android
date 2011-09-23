@@ -12,7 +12,7 @@ public class OSGSiteXMLParser implements ContentHandler {
 
 	private ArrayList<String> sites;
 	
-	private boolean reading_name = false;
+	protected boolean reading_name = false;
 	
 	public OSGSiteXMLParser() {
 		
