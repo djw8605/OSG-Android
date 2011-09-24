@@ -213,8 +213,9 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 	  
 	  private XYMultipleSeriesDataset GetOSGVOUsage(String site, String vo){
 		  //XYMultipleSeriesDataset xyseries = new XYMultipleSeriesDataset();
-		  XYMultipleSeriesDataset xyseries = new StackedXYMultipleSeries();
-		  ArrayList<TimeSeries> list_series = new ArrayList<TimeSeries>();
+		  StackedXYMultipleSeries xyseries = new StackedXYMultipleSeries();
+		  xyseries.setShowOther(true);
+		  xyseries.setShowSize(10);
 		  URL vo_url = null;
 		  URLConnection urlConnection = null;
 		  BufferedReader in = null;
@@ -263,8 +264,7 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 					  vo_key = entries[0];
 					  if (xy != null) {
 						  if(xy.getItemCount() > 0)
-							  list_series.add(xy);
-						  //xyseries.addSeries(xy);
+						  		xyseries.addSeries(xy);
 					  }
 					  xy = new TimeSeries(vo_key);
 				  }
@@ -280,8 +280,7 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 				  }
 			  }
 			  if (xy != null) {
-				  list_series.add(xy);
-				  //xyseries.addSeries(xy);
+				  xyseries.addSeries(xy);
 			  }
 
 
@@ -290,36 +289,11 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 		  }
 
 
-		 msg = Message.obtain(this.usage_progress_handler);
-		 msg.obj = new String("Formatting data...");
-		 msg.arg1 = 0;
-		 msg.arg2 = 1;
-		 msg.sendToTarget();
-		  // Now limit to the top X series
-		  Collections.sort(list_series, new CustomComparator());
-		  msg = Message.obtain(this.usage_progress_handler);
-		  msg.arg1 = 50;
-		  msg.sendToTarget();
-		  for (int i = 0; list_series.size() > 10; i++) {
-			  list_series.remove(0);
-		  }
-		  msg = Message.obtain(this.usage_progress_handler);
-		  msg.arg1 = 75;
-		  msg.sendToTarget();
-		  for (int i = 0; i < list_series.size(); i++)
-			  xyseries.addSeries(list_series.get(i));
-		  
-		  msg = Message.obtain(this.usage_progress_handler);
-		  msg.arg1 = 100;
-		  msg.sendToTarget();
+		 
 		  return xyseries;
 	  }
 
-	  public class CustomComparator implements Comparator<TimeSeries> {
-		    public int compare(TimeSeries o1, TimeSeries o2) {
-		        return Double.compare(o1.getMaxY(), o2.getMaxY());
-		    }
-		}
+
 
 	  private void ErrorDialog(String message) {
 		  
