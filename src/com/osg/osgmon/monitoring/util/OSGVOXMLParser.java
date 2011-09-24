@@ -1,4 +1,4 @@
-package com.osg.osgmon;
+package com.osg.osgmon.monitoring.util;
 
 import org.xml.sax.Attributes;
 

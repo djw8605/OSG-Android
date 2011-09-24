@@ -1,4 +1,4 @@
-package com.osg.osgmon;
+package com.osg.osgmon.monitoring;
 
 import java.net.URL;
 
@@ -29,6 +29,10 @@ import android.widget.SlidingDrawer;
 import android.widget.SlidingDrawer.OnDrawerCloseListener;
 import android.widget.SlidingDrawer.OnDrawerOpenListener;
 import android.widget.Spinner;
+
+import com.osg.osgmon.R;
+import com.osg.osgmon.monitoring.util.OSGSiteXMLParser;
+import com.osg.osgmon.monitoring.util.OSGVOXMLParser;
 
 public class OSGMonitoringActivity extends Activity implements OnClickListener, Runnable, OnDrawerCloseListener, OnDrawerOpenListener {
 	

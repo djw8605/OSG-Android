@@ -1,4 +1,4 @@
-package com.osg.osgmon;
+package com.osg.osgmon.monitoring;
 
 import java.io.BufferedReader;
 import java.io.IOException;

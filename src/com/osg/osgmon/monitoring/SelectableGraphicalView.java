@@ -1,4 +1,4 @@
-package com.osg.osgmon;
+package com.osg.osgmon.monitoring;
 
 import org.achartengine.GraphicalView;
 import org.achartengine.chart.AbstractChart;
