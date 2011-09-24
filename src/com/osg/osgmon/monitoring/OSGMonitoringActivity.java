@@ -68,34 +68,17 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		
 		// Load the data from a configuration (orientation...) change
 		final MonitoringActivitySavedState data = (MonitoringActivitySavedState) getLastNonConfigurationInstance();
-	    if (data == null) {
-	    	// Load data from saved instance
-	    	if (savedInstanceState != null) {
-	    		if (savedInstanceState.containsKey(OSGMonitoringActivity.SITES_ARRAY)) {
-	    			Message msg = Message.obtain(this.sitesMessage);
-		    		msg.obj = savedInstanceState.getStringArray(OSGMonitoringActivity.SITES_ARRAY);
-		    		msg.sendToTarget();
-		    		loaded_saved_instance = true;
-	    		}
-	    		if (savedInstanceState.containsKey(OSGMonitoringActivity.VOS_ARRAY)) {
-	    			Message msg = Message.obtain(this.vosMessage);
-		    		msg.obj = savedInstanceState.getStringArray(OSGMonitoringActivity.VOS_ARRAY);
-		    		msg.sendToTarget();
-		    		loaded_saved_instance = true;
-	    		}
-	    		
-	    	}
-	    	if (!loaded_saved_instance) {
-	    		StartProgressDialog("Loading Sites...");
-	    		Thread sites_thread = new Thread(this);
-				sites_thread.start();
-	    	}
-	    	// Start the data thread
-	    	
-	    	SlidingDrawer sd = (SlidingDrawer) findViewById(R.id.slidingDrawer);
-	    	sd.animateOpen();
-	    	
-	    } else {
+		if (data == null) {
+
+			StartProgressDialog("Loading Sites...");
+			// Start the data thread
+			Thread sites_thread = new Thread(this);
+			sites_thread.start();
+
+			SlidingDrawer sd = (SlidingDrawer) findViewById(R.id.slidingDrawer);
+			sd.animateOpen();
+
+		} else {
 	    	// Load in the data from the saved state.
 	    	this.auto_textview.setAdapter((ArrayAdapter) data.getSitesAdapter());
 	    	this.auto_textview.setText(data.getSitesText());
@@ -118,6 +101,7 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		
 		
 	}
+	
 	
 	/**
 	 * Save instance state
