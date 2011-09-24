@@ -47,12 +47,15 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 	
 	private Spinner vo_spinner = null;
 	
+	
 	public OSGMonitoringActivity() {
 		//osg_site_usage = new OSGSiteUsage(this);
 		
 		
 	}
 	
+	private final static String SITES_ARRAY = "sites_array";
+	private final static String VOS_ARRAY = "vos_array";
 	private AutoCompleteTextView auto_textview = null;
 	private AutoCompleteTextView vo_autotext = null;
 	
@@ -61,16 +64,37 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		setContentView(R.layout.osg_monitoring);
 		
 		this.initializeAutocompletes();
+		boolean loaded_saved_instance = false;
 		
 		// Load the data from a configuration (orientation...) change
 		final MonitoringActivitySavedState data = (MonitoringActivitySavedState) getLastNonConfigurationInstance();
 	    if (data == null) {
+	    	// Load data from saved instance
+	    	if (savedInstanceState != null) {
+	    		if (savedInstanceState.containsKey(OSGMonitoringActivity.SITES_ARRAY)) {
+	    			Message msg = Message.obtain(this.sitesMessage);
+		    		msg.obj = savedInstanceState.getStringArray(OSGMonitoringActivity.SITES_ARRAY);
+		    		msg.sendToTarget();
+		    		loaded_saved_instance = true;
+	    		}
+	    		if (savedInstanceState.containsKey(OSGMonitoringActivity.VOS_ARRAY)) {
+	    			Message msg = Message.obtain(this.vosMessage);
+		    		msg.obj = savedInstanceState.getStringArray(OSGMonitoringActivity.VOS_ARRAY);
+		    		msg.sendToTarget();
+		    		loaded_saved_instance = true;
+	    		}
+	    		
+	    	}
+	    	if (!loaded_saved_instance) {
+	    		StartProgressDialog("Loading Sites...");
+	    		Thread sites_thread = new Thread(this);
+				sites_thread.start();
+	    	}
 	    	// Start the data thread
-	    	StartProgressDialog("Loading Sites...");
+	    	
 	    	SlidingDrawer sd = (SlidingDrawer) findViewById(R.id.slidingDrawer);
 	    	sd.animateOpen();
-	    	Thread sites_thread = new Thread(this);
-			sites_thread.start();
+	    	
 	    } else {
 	    	// Load in the data from the saved state.
 	    	this.auto_textview.setAdapter((ArrayAdapter) data.getSitesAdapter());
@@ -94,7 +118,28 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		
 		
 	}
-		
+	
+	/**
+	 * Save instance state
+	 * @override
+	 */
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		savedInstanceState.putStringArray(OSGMonitoringActivity.SITES_ARRAY, this.site_names);
+		savedInstanceState.putStringArray(OSGMonitoringActivity.VOS_ARRAY, this.vo_names);
+		super.onSaveInstanceState(savedInstanceState);
+	}
+	
+	/**
+	 * Restore state
+	 * @override
+	 */
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		super.onRestoreInstanceState(savedInstanceState);
+		this.site_names = savedInstanceState.getStringArray(OSGMonitoringActivity.SITES_ARRAY);
+		this.vo_names = savedInstanceState.getStringArray(OSGMonitoringActivity.VOS_ARRAY);
+	}
+	
 	/**
 	 * This function will only be called the first time the activity is shown
 	 * 
