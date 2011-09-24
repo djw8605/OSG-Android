@@ -103,7 +103,8 @@ public class StackedXYMultipleSeries extends XYMultipleSeriesDataset {
 			series_copy.remove(0);
 		}  // End for
 		
-		series_copy.add(other_series);
+		if (other_series != null)
+			series_copy.add(other_series);
 		
 		// Remove all the current series
 		for (int i = 0; i < super.getSeriesCount(); i++)
@@ -131,7 +132,11 @@ public class StackedXYMultipleSeries extends XYMultipleSeriesDataset {
 	
 	public synchronized int getSeriesCount() {
 		if (this.showOther) {
-			return Math.min(this.mSize+1, this.mtmp_series.size());
+			if (this.mtmp_series.size() > this.mSize) {
+				return Math.min(this.mSize + 1, this.mtmp_series.size());
+			} else {
+				return Math.min(this.mSize, this.mtmp_series.size());
+			}
 		} else {
 			return Math.min(this.mSize, this.mtmp_series.size());
 		}

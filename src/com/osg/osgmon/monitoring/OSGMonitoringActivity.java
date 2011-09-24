@@ -62,8 +62,7 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		
 	}
 	
-	private final static String SITES_ARRAY = "sites_array";
-	private final static String VOS_ARRAY = "vos_array";
+
 	private AutoCompleteTextView auto_textview = null;
 	private AutoCompleteTextView vo_autotext = null;
 	
@@ -72,7 +71,6 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		setContentView(R.layout.osg_monitoring);
 		
 		this.initializeAutocompletes();
-		boolean loaded_saved_instance = false;
 		
 		// Load the data from a configuration (orientation...) change
 		final MonitoringActivitySavedState data = (MonitoringActivitySavedState) getLastNonConfigurationInstance();
@@ -265,6 +263,7 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(osg_monitoring, R.layout.list_item2, concat_vo_names);
 				//vo_autotext.setAdapter(adapter);
 				vo_spinner.setAdapter(adapter);
+				StopProgressDialog();
 			}
 			
 		}
