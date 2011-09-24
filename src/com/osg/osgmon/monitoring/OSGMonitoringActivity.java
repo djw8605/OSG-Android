@@ -104,27 +104,6 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 	
 	
 	/**
-	 * Save instance state
-	 * @override
-	 */
-	public void onSaveInstanceState(Bundle savedInstanceState) {
-		savedInstanceState.putStringArray(OSGMonitoringActivity.SITES_ARRAY, this.site_names);
-		savedInstanceState.putStringArray(OSGMonitoringActivity.VOS_ARRAY, this.vo_names);
-		super.onSaveInstanceState(savedInstanceState);
-	}
-	
-	/**
-	 * Restore state
-	 * @override
-	 */
-	public void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-		super.onRestoreInstanceState(savedInstanceState);
-		this.site_names = savedInstanceState.getStringArray(OSGMonitoringActivity.SITES_ARRAY);
-		this.vo_names = savedInstanceState.getStringArray(OSGMonitoringActivity.VOS_ARRAY);
-	}
-	
-	/**
 	 * This function will only be called the first time the activity is shown
 	 * 
 	 * 
