@@ -1,6 +1,14 @@
 package com.osg.osgmon.monitoring;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.URL;
+import java.util.ArrayList;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -306,8 +314,31 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 	}
 	
 	
+	/**
+	 * Get Sites section
+	 */
+	private final static String SITE_CACHE_NAME = "SITE_CACHE";
 
 	  private String [] GetSites() {
+		  // Check if there's a cache file
+		  String [] sites = null;
+		  
+		  BufferedReader in = this.GetInputCacheFile(OSGMonitoringActivity.SITE_CACHE_NAME);
+		  if (in != null) {
+			  ArrayList<String> string_list = new ArrayList<String>();
+			  String buf = "";
+			  try {
+				  while ((buf = in.readLine()) != null) {
+					  string_list.add(buf);
+				  }
+				  sites = (String []) string_list.toArray(new String[0]);
+				  return sites;
+			  } catch (Exception e) {
+				  System.out.println(e.getMessage());
+			  }
+
+		  }
+		  
 		  System.setProperty("org.xml.sax.driver","org.xmlpull.v1.sax2.Driver");
 		  OSGSiteXMLParser osg_parser = new OSGSiteXMLParser();
 		  String url = "http://myosg.grid.iu.edu/rgsummary/xml?datasource=summary&gip_status_attrs_showtestresults=on&downtime_attrs_showpast=&account_type=cumulative_hours&ce_account_type=gip_vo&se_account_type=vo_transfer_volume&bdiitree_type=total_jobs&bdii_object=service&bdii_server=is-osg&start_type=7daysago&start_date=09%2F10%2F2011&end_type=now&end_date=09%2F10%2F2011&all_resources=on&gridtype=on&gridtype_1=on&service_central_value=0&service_hidden_value=0&active_value=1&disable_value=1%22";
@@ -321,16 +352,54 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 			  System.err.println(e.getMessage());
 		  }
 
-		  return osg_parser.GetSites();
+		  sites = osg_parser.GetSites();
+
+		  BufferedWriter out = this.GetOutputCacheFile(OSGMonitoringActivity.SITE_CACHE_NAME);
+		  try{
+			  if (out != null) {
+				  for (int i = 0; i < sites.length; i++) {
+					  out.write(sites[i] + "\n");
+				  }
+				  out.flush();
+			  }
+		  } catch (Exception ex) {
+			  System.err.println(ex.getMessage());
+
+		  }
+		  return sites;
 
 
 	  }
 
+	  
+	  /**
+	   * VO Get section
+	   */
+	  private final static String VO_CACHE_NAME = "VO_CACHE";
+	  
 	  private String [] GetVOs() {
+		  String [] vos = null;
+		  
+		  BufferedReader in = this.GetInputCacheFile(OSGMonitoringActivity.VO_CACHE_NAME);
+		  if (in != null) {
+			  ArrayList<String> string_list = new ArrayList<String>();
+			  String buf = "";
+			  try {
+				  while ((buf = in.readLine()) != null) {
+					  string_list.add(buf);
+				  }
+				  vos = (String []) string_list.toArray(new String[0]);
+				  return vos;
+			  } catch (Exception e) {
+				  System.out.println(e.getMessage());
+			  }
+
+		  }
+		  
 		  OSGVOXMLParser osg_parser = new OSGVOXMLParser();
 
 		  String url = "http://myosg.grid.iu.edu/vosummary/xml?all_vos=on&active=on&active_value=1&datasource=summary";
-
+		  System.setProperty("org.xml.sax.driver","org.xmlpull.v1.sax2.Driver");
 		  try {
 			  XMLReader myReader = XMLReaderFactory.createXMLReader();
 			  myReader.setContentHandler(osg_parser);
@@ -338,12 +407,47 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		  } catch (Exception e) {
 			  System.err.println(e.getMessage());
 		  }
+		  vos = osg_parser.GetSites();
+		  BufferedWriter out = this.GetOutputCacheFile(OSGMonitoringActivity.VO_CACHE_NAME);
+		  try{
+			  if (out != null) {
+				  for (int i = 0; i < vos.length; i++) {
+					  out.write(vos[i] + "\n");
+				  }
+				  out.flush();
+			  }
+		  } catch (Exception ex) {
+			  System.err.println(ex.getMessage());
 
-		  return osg_parser.GetSites();
+		  }
+		  return vos;
 
 	  }
 
+	  
+	  private BufferedReader GetInputCacheFile(String cache_file_name) {
+		  File tmp_file = new File(this.getCacheDir().getAbsolutePath() + "/" + cache_file_name);
+		  BufferedReader toReturn = null;
+		  try {
+			  toReturn = new BufferedReader(new InputStreamReader(new FileInputStream(tmp_file)));
+		  } catch (Exception ex) {
+			  
+		  }
+		  return toReturn;
+	  }
 
+	  private BufferedWriter GetOutputCacheFile(String cache_file_name) {
+		  File tmp_file = new File(this.getCacheDir().getAbsolutePath() + "/" + cache_file_name);
+		  
+		  BufferedWriter toReturn = null;
+		  try {
+			  tmp_file.createNewFile();
+			  toReturn = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp_file)));
+		  } catch (Exception ex) {
+			  
+		  }
+		  return toReturn;
+	  }
 	  
 }
 
