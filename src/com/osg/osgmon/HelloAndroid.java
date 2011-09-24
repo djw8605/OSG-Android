@@ -9,6 +9,9 @@ import java.text.DecimalFormatSymbols;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import com.osg.osgmon.map.OSGMapView;
+import com.osg.osgmon.monitoring.OSGMonitoringActivity;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
