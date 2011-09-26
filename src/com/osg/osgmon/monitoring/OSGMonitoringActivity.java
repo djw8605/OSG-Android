@@ -1,6 +1,14 @@
-package com.osg.osgmon;
+package com.osg.osgmon.monitoring;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.URL;
+import java.util.ArrayList;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -30,6 +38,10 @@ import android.widget.SlidingDrawer.OnDrawerCloseListener;
 import android.widget.SlidingDrawer.OnDrawerOpenListener;
 import android.widget.Spinner;
 
+import com.osg.osgmon.R;
+import com.osg.osgmon.monitoring.util.OSGSiteXMLParser;
+import com.osg.osgmon.monitoring.util.OSGVOXMLParser;
+
 public class OSGMonitoringActivity extends Activity implements OnClickListener, Runnable, OnDrawerCloseListener, OnDrawerOpenListener {
 	
 	// Graph activity
@@ -43,12 +55,14 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 	
 	private Spinner vo_spinner = null;
 	
+	
 	public OSGMonitoringActivity() {
 		//osg_site_usage = new OSGSiteUsage(this);
 		
 		
 	}
 	
+
 	private AutoCompleteTextView auto_textview = null;
 	private AutoCompleteTextView vo_autotext = null;
 	
@@ -56,12 +70,57 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.osg_monitoring);
 		
+		this.initializeAutocompletes();
+		
+		// Load the data from a configuration (orientation...) change
+		final MonitoringActivitySavedState data = (MonitoringActivitySavedState) getLastNonConfigurationInstance();
+		if (data == null) {
+
+			StartProgressDialog("Loading Sites...");
+			// Start the data thread
+			Thread sites_thread = new Thread(this);
+			sites_thread.start();
+
+			SlidingDrawer sd = (SlidingDrawer) findViewById(R.id.slidingDrawer);
+			sd.animateOpen();
+
+		} else {
+	    	// Load in the data from the saved state.
+	    	this.auto_textview.setAdapter((ArrayAdapter) data.getSitesAdapter());
+	    	this.auto_textview.setText(data.getSitesText());
+	    	this.vo_spinner.setAdapter(data.getVOsAdapter());
+	    	this.vo_spinner.setSelection(data.getVOsSelected());
+	    	
+	    	
+	    	// Slider drawer doesn't work right.
+	    	SlidingDrawer sd = (SlidingDrawer) findViewById(R.id.slidingDrawer);
+	    	if (data.getSliderOpen())
+	    		sd.open();
+	    	else
+	    		sd.close();
+	    	
+	    	if (data.getChartData() != null)
+	    		this.osg_site_usage.updateGraph(this, sd.getContext(), data.getChartData());
+	    	
+	    	//this.updateGraph();
+	    }
 		
 		
-		StartProgressDialog("Loading Sites...");
+	}
+	
+	
+	/**
+	 * This function will only be called the first time the activity is shown
+	 * 
+	 * 
+	 */
+	protected void initializeAutocompletes() {
+		
 		
 		this.auto_textview = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
 		this.auto_textview.setThreshold(2);
+		
+		// Ignore enter key
 		this.auto_textview.setOnKeyListener(new OnKeyListener() {
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
 				 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
@@ -74,31 +133,40 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 			}
 		});
 		
-//		this.vo_autotext =  (AutoCompleteTextView) findViewById(R.id.vo_auto_complete);
-//		this.vo_autotext.setThreshold(2);
-		
 		this.vo_spinner = (Spinner) findViewById(R.id.vo_spinner);
 		
-		Thread sites_thread = new Thread(this);
-		sites_thread.start();
+		
 		
 		Button get_usage_button = (Button) findViewById(R.id.confirm_site);
 		get_usage_button.setOnClickListener(this);
 		
 		ViewGroup slider_view_group = (ViewGroup) findViewById(R.id.sliderlayout);
 		osg_site_usage = new OSGSiteUsage(slider_view_group);
-		
+
 		// Open the slider when the screen is shown for the first time.
 		SlidingDrawer sd = (SlidingDrawer) findViewById(R.id.slidingDrawer);
-		sd.animateOpen();
+		
 		sd.setOnDrawerCloseListener(this);
 		sd.setOnDrawerOpenListener(this);
 		
-		//lc.drawSeries(draw_canvas, paint_canvas, stuff, new XYSeriesRenderer(), (float)15.0, 0);
-		
-		
 	}
 	
+	/**
+	 * Save the current state of the activity
+	 * 
+	 */
+	 public Object onRetainNonConfigurationInstance() {
+	    MonitoringActivitySavedState saved_state = new MonitoringActivitySavedState();
+	    SlidingDrawer sd = (SlidingDrawer) findViewById(R.id.slidingDrawer);
+	    saved_state.setSliderOpen(sd.isOpened());
+	    saved_state.setSitesAdapter(this.auto_textview.getAdapter());
+	    saved_state.setSitesText(this.auto_textview.getText().toString());
+	    saved_state.setVOsAdapter(this.vo_spinner.getAdapter());
+	    saved_state.setVOsSelected(this.vo_spinner.getSelectedItemPosition());
+	    saved_state.setChartData(this.osg_site_usage.getCurrentData());
+	    return saved_state;
+	 }
+
 	public void onDrawerClosed() {
 		Context context = findViewById(R.id.sliderlayout).getContext();
 		InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE); 
@@ -195,6 +263,7 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(osg_monitoring, R.layout.list_item2, concat_vo_names);
 				//vo_autotext.setAdapter(adapter);
 				vo_spinner.setAdapter(adapter);
+				StopProgressDialog();
 			}
 			
 		}
@@ -244,8 +313,31 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 	}
 	
 	
+	/**
+	 * Get Sites section
+	 */
+	private final static String SITE_CACHE_NAME = "SITE_CACHE";
 
 	  private String [] GetSites() {
+		  // Check if there's a cache file
+		  String [] sites = null;
+		  
+		  BufferedReader in = this.GetInputCacheFile(OSGMonitoringActivity.SITE_CACHE_NAME);
+		  if (in != null) {
+			  ArrayList<String> string_list = new ArrayList<String>();
+			  String buf = "";
+			  try {
+				  while ((buf = in.readLine()) != null) {
+					  string_list.add(buf);
+				  }
+				  sites = (String []) string_list.toArray(new String[0]);
+				  return sites;
+			  } catch (Exception e) {
+				  System.out.println(e.getMessage());
+			  }
+
+		  }
+		  
 		  System.setProperty("org.xml.sax.driver","org.xmlpull.v1.sax2.Driver");
 		  OSGSiteXMLParser osg_parser = new OSGSiteXMLParser();
 		  String url = "http://myosg.grid.iu.edu/rgsummary/xml?datasource=summary&gip_status_attrs_showtestresults=on&downtime_attrs_showpast=&account_type=cumulative_hours&ce_account_type=gip_vo&se_account_type=vo_transfer_volume&bdiitree_type=total_jobs&bdii_object=service&bdii_server=is-osg&start_type=7daysago&start_date=09%2F10%2F2011&end_type=now&end_date=09%2F10%2F2011&all_resources=on&gridtype=on&gridtype_1=on&service_central_value=0&service_hidden_value=0&active_value=1&disable_value=1%22";
@@ -259,16 +351,54 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 			  System.err.println(e.getMessage());
 		  }
 
-		  return osg_parser.GetSites();
+		  sites = osg_parser.GetSites();
+
+		  BufferedWriter out = this.GetOutputCacheFile(OSGMonitoringActivity.SITE_CACHE_NAME);
+		  try{
+			  if (out != null) {
+				  for (int i = 0; i < sites.length; i++) {
+					  out.write(sites[i] + "\n");
+				  }
+				  out.flush();
+			  }
+		  } catch (Exception ex) {
+			  System.err.println(ex.getMessage());
+
+		  }
+		  return sites;
 
 
 	  }
 
+	  
+	  /**
+	   * VO Get section
+	   */
+	  private final static String VO_CACHE_NAME = "VO_CACHE";
+	  
 	  private String [] GetVOs() {
-		  OSGSiteXMLParser osg_parser = new OSGSiteXMLParser();
+		  String [] vos = null;
+		  
+		  BufferedReader in = this.GetInputCacheFile(OSGMonitoringActivity.VO_CACHE_NAME);
+		  if (in != null) {
+			  ArrayList<String> string_list = new ArrayList<String>();
+			  String buf = "";
+			  try {
+				  while ((buf = in.readLine()) != null) {
+					  string_list.add(buf);
+				  }
+				  vos = (String []) string_list.toArray(new String[0]);
+				  return vos;
+			  } catch (Exception e) {
+				  System.out.println(e.getMessage());
+			  }
+
+		  }
+		  
+		  OSGVOXMLParser osg_parser = new OSGVOXMLParser();
 
 		  String url = "http://myosg.grid.iu.edu/vosummary/xml?all_vos=on&active=on&active_value=1&datasource=summary";
-
+		  System.setProperty("org.xml.sax.driver","org.xmlpull.v1.sax2.Driver");
 		  try {
 			  XMLReader myReader = XMLReaderFactory.createXMLReader();
 			  myReader.setContentHandler(osg_parser);
@@ -276,12 +406,47 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		  } catch (Exception e) {
 			  System.err.println(e.getMessage());
 		  }
+		  vos = osg_parser.GetSites();
+		  BufferedWriter out = this.GetOutputCacheFile(OSGMonitoringActivity.VO_CACHE_NAME);
+		  try{
+			  if (out != null) {
+				  for (int i = 0; i < vos.length; i++) {
+					  out.write(vos[i] + "\n");
+				  }
+				  out.flush();
+			  }
+		  } catch (Exception ex) {
+			  System.err.println(ex.getMessage());
 
-		  return osg_parser.GetSites();
+		  }
+		  return vos;
 
 	  }
 
+	  
+	  private BufferedReader GetInputCacheFile(String cache_file_name) {
+		  File tmp_file = new File(this.getCacheDir().getAbsolutePath() + "/" + cache_file_name);
+		  BufferedReader toReturn = null;
+		  try {
+			  toReturn = new BufferedReader(new InputStreamReader(new FileInputStream(tmp_file)));
+		  } catch (Exception ex) {
+			  
+		  }
+		  return toReturn;
+	  }
 
+	  private BufferedWriter GetOutputCacheFile(String cache_file_name) {
+		  File tmp_file = new File(this.getCacheDir().getAbsolutePath() + "/" + cache_file_name);
+		  
+		  BufferedWriter toReturn = null;
+		  try {
+			  tmp_file.createNewFile();
+			  toReturn = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp_file)));
+		  } catch (Exception ex) {
+			  
+		  }
+		  return toReturn;
+	  }
 	  
 }
 

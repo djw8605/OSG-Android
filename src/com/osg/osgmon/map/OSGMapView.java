@@ -1,4 +1,4 @@
-package com.osg.osgmon;
+package com.osg.osgmon.map;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -14,11 +14,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.LinearLayout;
 
-import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
+import com.osg.osgmon.R;
 
 public class OSGMapView extends MapActivity {
 

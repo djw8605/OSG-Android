@@ -15,10 +15,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".OSGMonitoringActivity"></activity>
+        <activity android:name=".monitoring.OSGMonitoringActivity"></activity>
         <activity android:name="org.achartengine.GraphicalActivity"></activity>
         <uses-library android:name="com.google.android.maps" />
-        <activity android:name="com.osg.osgmon.OSGMapView"></activity>
-        <activity android:name="OSGSiteUsage"></activity>
+        <activity android:name=".map.OSGMapView"></activity>
+        <activity android:name=".monitoring.OSGSiteUsage"></activity>
     </application>
 </manifest>

@@ -1,4 +1,4 @@
-package com.osg.osgmon;
+package com.osg.osgmon.monitoring;
 
 import org.achartengine.chart.TimeChart;
 import org.achartengine.model.XYMultipleSeriesDataset;

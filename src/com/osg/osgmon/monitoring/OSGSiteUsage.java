@@ -1,4 +1,4 @@
-package com.osg.osgmon;
+package com.osg.osgmon.monitoring;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,6 +52,8 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 	
 	public OSGSiteUsage this_ptr = this;
 	
+	protected XYMultipleSeriesDataset current_data;
+	
 	public OSGSiteUsage(ViewGroup viewGroup) {
 		this.view_to_append = viewGroup;
 		//this.act = this;
@@ -63,7 +65,9 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 	}
 	
 
-	
+	public XYMultipleSeriesDataset getCurrentData() {
+		return this.current_data;
+	}
 
 	private Thread data_thread;
 	private String site = "";
@@ -92,6 +96,13 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 		this.data_thread.start();
 	}
 	
+	public void updateGraph(Activity act, Context context, XYMultipleSeriesDataset current_data) {
+		this.act = act;
+		this.context = context;
+		createChart(current_data);
+		
+	}
+	
 	
 	public void onClick(View v) {
 		
@@ -102,40 +113,31 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 	}
 	
 
-	
+	protected void createChart(XYMultipleSeriesDataset xyseries) {
+		this.current_data = xyseries;
+		XYMultipleSeriesRenderer xyseriesrender = getDemoRenderer(xyseries.getSeriesCount());
+		XYChart chart = new StackedTimeChart(xyseries, xyseriesrender);
+		GraphicalView mView = new SelectableGraphicalView(context, chart);
+
+		view_to_append.removeAllViews();
+		view_to_append.addView(mView);
+		mView.setId(1);
+		//mView.setOnClickListener(this_ptr);
+		current_view = mView;
+	    //act.startActivity(intent);
+		
+		mView.repaint();
+		
+	}
 	
 	Handler usage_handler = new Handler() {
 		
 		public void handleMessage(Message msg) {
 			
 			XYMultipleSeriesDataset xyseries = (XYMultipleSeriesDataset) msg.obj; 
-			XYMultipleSeriesRenderer xyseriesrender = getDemoRenderer(xyseries.getSeriesCount());
-			
-			//Intent intent = new Intent(context, OSGSiteUsage.class);
-		    //XYChart chart = new StackedTimeChart(xyseries, xyseriesrender);
-		   
-		    //intent.putExtra("chart", chart);
-		    //intent.putExtra("title" );
-		    
-		    //act.startActivity(intent);
-		    
-			//Intent intent = ChartFactory.getTimeChartIntent(context, xyseries, xyseriesrender, site);
 			
 			p_dialog.dismiss();
-			
-			XYChart chart = new StackedTimeChart(xyseries, xyseriesrender);
-			GraphicalView mView = new SelectableGraphicalView(context, chart);
-
-			view_to_append.removeAllViews();
-			view_to_append.addView(mView);
-			mView.setId(1);
-			//mView.setOnClickListener(this_ptr);
-			current_view = mView;
-		    //act.startActivity(intent);
-			
-			mView.repaint();
-		    
-		    
+			createChart(xyseries);
 			
 		}
 		
@@ -211,8 +213,9 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 	  
 	  private XYMultipleSeriesDataset GetOSGVOUsage(String site, String vo){
 		  //XYMultipleSeriesDataset xyseries = new XYMultipleSeriesDataset();
-		  XYMultipleSeriesDataset xyseries = new StackedXYMultipleSeries();
-		  ArrayList<TimeSeries> list_series = new ArrayList<TimeSeries>();
+		  StackedXYMultipleSeries xyseries = new StackedXYMultipleSeries();
+		  xyseries.setShowOther(true);
+		  xyseries.setShowSize(10);
 		  URL vo_url = null;
 		  URLConnection urlConnection = null;
 		  BufferedReader in = null;
@@ -261,8 +264,7 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 					  vo_key = entries[0];
 					  if (xy != null) {
 						  if(xy.getItemCount() > 0)
-							  list_series.add(xy);
-						  //xyseries.addSeries(xy);
+						  		xyseries.addSeries(xy);
 					  }
 					  xy = new TimeSeries(vo_key);
 				  }
@@ -280,8 +282,7 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 				  }
 			  }
 			  if (xy != null) {
-				  list_series.add(xy);
-				  //xyseries.addSeries(xy);
+				  xyseries.addSeries(xy);
 			  }
 
 
@@ -290,36 +291,11 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 		  }
 
 
-		 msg = Message.obtain(this.usage_progress_handler);
-		 msg.obj = new String("Formatting data...");
-		 msg.arg1 = 0;
-		 msg.arg2 = 1;
-		 msg.sendToTarget();
-		  // Now limit to the top X series
-		  Collections.sort(list_series, new CustomComparator());
-		  msg = Message.obtain(this.usage_progress_handler);
-		  msg.arg1 = 50;
-		  msg.sendToTarget();
-		  for (int i = 0; list_series.size() > 10; i++) {
-			  list_series.remove(0);
-		  }
-		  msg = Message.obtain(this.usage_progress_handler);
-		  msg.arg1 = 75;
-		  msg.sendToTarget();
-		  for (int i = 0; i < list_series.size(); i++)
-			  xyseries.addSeries(list_series.get(i));
-		  
-		  msg = Message.obtain(this.usage_progress_handler);
-		  msg.arg1 = 100;
-		  msg.sendToTarget();
+		 
 		  return xyseries;
 	  }
 
-	  public class CustomComparator implements Comparator<TimeSeries> {
-		    public int compare(TimeSeries o1, TimeSeries o2) {
-		        return Double.compare(o1.getMaxY(), o2.getMaxY());
-		    }
-		}
+
 
 	  private void ErrorDialog(String message) {
 		  

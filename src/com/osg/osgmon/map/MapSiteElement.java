@@ -1,4 +1,4 @@
-package com.osg.osgmon;
+package com.osg.osgmon.map;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
