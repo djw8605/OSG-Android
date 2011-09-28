@@ -137,7 +137,11 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 			XYMultipleSeriesDataset xyseries = (XYMultipleSeriesDataset) msg.obj; 
 			
 			p_dialog.dismiss();
-			createChart(xyseries);
+			if (xyseries.getSeriesCount() == 0) {
+				ErrorDialog("Didn't get any usage.");
+			} else {
+				createChart(xyseries);
+			}
 			
 		}
 		
