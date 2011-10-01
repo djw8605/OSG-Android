@@ -177,7 +177,10 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 	}
 	
 	public void onDrawerOpened() {
-		findViewById(R.id.sliderlayout).bringToFront();
+		findViewById(R.id.slidingDrawer).bringToFront();
+		View graph_legend = findViewById(R.layout.graphlegend);
+		if (graph_legend != null)
+			graph_legend.setVisibility(View.GONE);
 		this.auto_textview.selectAll();
 		
 	}
