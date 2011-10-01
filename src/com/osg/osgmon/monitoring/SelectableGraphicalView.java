@@ -147,8 +147,9 @@ public class SelectableGraphicalView extends GraphicalView {
 		Display display = ((WindowManager) this.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 		int height = display.getHeight();
 		//LayoutParams params = mLayout.generateLayoutParams();
-		v.setX(40);
-		v.setY(10);
+		
+		//v.setX(40);
+		//v.setY(10);
 		
 
 		return true;
