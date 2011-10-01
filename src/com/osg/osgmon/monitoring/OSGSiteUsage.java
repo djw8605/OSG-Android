@@ -1,15 +1,11 @@
 package com.osg.osgmon.monitoring;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Random;
 
@@ -137,7 +133,11 @@ public class OSGSiteUsage extends Activity implements OnClickListener, Runnable 
 			XYMultipleSeriesDataset xyseries = (XYMultipleSeriesDataset) msg.obj; 
 			
 			p_dialog.dismiss();
-			createChart(xyseries);
+			if (xyseries.getSeriesCount() == 0) {
+				ErrorDialog("Didn't get any usage.");
+			} else {
+				createChart(xyseries);
+			}
 			
 		}
 		

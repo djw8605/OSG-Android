@@ -290,6 +290,9 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 		updateGraph();
 	}
 	
+	
+	
+	
 	public void updateGraph() {
 		
 		AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
