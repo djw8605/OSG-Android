@@ -1,6 +1,8 @@
 package com.osg.osgmon.monitoring;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.achartengine.GraphicalView;
 import org.achartengine.chart.AbstractChart;
@@ -127,9 +129,17 @@ public class SelectableGraphicalView extends GraphicalView {
 		titleView.setPadding(10, 10, 10, 10);
 		titleView.setTypeface(Typeface.create("", Typeface.BOLD));
 		layout.addView(titleView);
+		
 		for(int i = viewlist.size()-1; i >= 0; i--)
 			layout.addView(viewlist.get(i));
 				
+		
+
+		TextView timeView = new TextView(this.getContext());
+		Date d = new Date((long)graph_points[0]);
+		SimpleDateFormat date_format = new SimpleDateFormat("MM/dd/yy HH:mm aa");
+		timeView.setText(date_format.format(d));
+		layout.addView(timeView);
 		//textView.setText(toset);
 		
 		
