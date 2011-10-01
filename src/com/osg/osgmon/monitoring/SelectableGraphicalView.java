@@ -1,5 +1,7 @@
 package com.osg.osgmon.monitoring;
 
+import java.util.ArrayList;
+
 import org.achartengine.GraphicalView;
 import org.achartengine.chart.AbstractChart;
 import org.achartengine.model.XYMultipleSeriesDataset;
@@ -9,10 +11,17 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.osg.osgmon.R;
@@ -56,7 +65,13 @@ public class SelectableGraphicalView extends GraphicalView {
 		v.setId(R.layout.graphlegend);
 		// fill in any details dynamically here
 		TextView textView = new TextView(this.getContext());
-		
+		textView.setPadding(10, 10, 10, 10);
+		ScrollView sv = new ScrollView(this.getContext());
+		v.addView(sv);
+		TableLayout layout = new TableLayout(this.getContext());
+		//layout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+		//layout.setOrientation(layout.VERTICAL);
+		sv.addView(layout);
 		String toset = "";
 		
 		
@@ -74,9 +89,9 @@ public class SelectableGraphicalView extends GraphicalView {
 		double [] max_screen_points = ((StackedTimeChart) this.graph_chart).toScreenPoint(max_points);
 		double[] graph_points = new double[2];
 		
-		graph_points[0] = (((max_points[0] - points[0]) / (max_screen_points[0] - min_screen_points[0])) * this.selectedX) + points[0];
+		graph_points[0] = (((max_points[0] - points[0]) / (max_screen_points[0] - min_screen_points[0])) * (this.selectedX-min_screen_points[0])) + points[0];
 		
-		
+		ArrayList<View> viewlist = new ArrayList<View>();
 		double previous_y = 0;
 		for(int i = 0; i < data.getSeriesCount(); i++) {
 			XYSeries series = data.getSeriesAt(i);
@@ -93,12 +108,30 @@ public class SelectableGraphicalView extends GraphicalView {
 			}
 			double tmp_value = series.getY(min_distance_index) - previous_y;
 			previous_y = series.getY(min_distance_index);
-			String value = Double.toString(tmp_value);
-			toset += title + ": " + value + "\n";
+			String value = Integer.toString((int)tmp_value);
+			TableRow newrow = new TableRow(this.getContext());
+			textView = new TextView(this.getContext());
+			textView.setPadding(0, 0, 10, 0);
+			textView.setText(title);
+			newrow.addView(textView);
+			textView = new TextView(this.getContext());
+			textView.setText(value);
+			textView.setGravity(Gravity.RIGHT);
+			newrow.addView(textView);
+			viewlist.add(newrow);
+			
+			
 		}
+		TextView titleView = new TextView(this.getContext());
+		titleView.setText("Graph Legend");
+		titleView.setPadding(10, 10, 10, 10);
+		titleView.setTypeface(Typeface.create("", Typeface.BOLD));
+		layout.addView(titleView);
+		for(int i = viewlist.size()-1; i >= 0; i--)
+			layout.addView(viewlist.get(i));
+				
+		//textView.setText(toset);
 		
-		textView.setText(toset);
-		v.addView(textView);
 		
 		
 
@@ -110,9 +143,10 @@ public class SelectableGraphicalView extends GraphicalView {
 		((ViewGroup) insertPoint).addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 		v.bringToFront();
 
-		
-		v.setX(selectedX - 100);
-		v.setY(selectedY);
+		Display display = ((WindowManager) this.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+		int height = display.getHeight();
+		v.setX(40);
+		v.setY(10);
 		
 
 		return true;
