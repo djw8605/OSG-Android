@@ -140,11 +140,13 @@ public class SelectableGraphicalView extends GraphicalView {
 		View insertPoint = parent.findViewById(R.id.osgmonitoring);
 		
 		((ViewGroup) insertPoint).removeView(parent.findViewById(R.layout.graphlegend));
+		//AbsoluteLayout.LayoutParams params = new AbsoluteLayout.LayoutParams(params);//ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 		((ViewGroup) insertPoint).addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 		v.bringToFront();
 
 		Display display = ((WindowManager) this.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 		int height = display.getHeight();
+		//LayoutParams params = mLayout.generateLayoutParams();
 		v.setX(40);
 		v.setY(10);
 		
