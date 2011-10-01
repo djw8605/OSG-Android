@@ -2,6 +2,8 @@ package com.osg.osgmon.monitoring;
 
 import org.achartengine.GraphicalView;
 import org.achartengine.chart.AbstractChart;
+import org.achartengine.model.XYMultipleSeriesDataset;
+import org.achartengine.model.XYSeries;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -19,11 +21,13 @@ public class SelectableGraphicalView extends GraphicalView {
 
 	protected float selectedX = -1;
 	protected float selectedY = -1;
+	protected AbstractChart graph_chart;
 	
 	public final static int GRAPH_LEGEND_ID = 100;
 	
 	public SelectableGraphicalView(Context arg0, AbstractChart arg1) {
 		super(arg0, arg1);
+		this.graph_chart = arg1;
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -40,6 +44,8 @@ public class SelectableGraphicalView extends GraphicalView {
 	
 	public boolean onTouchEvent(MotionEvent event) {
 		
+		//super.onTouchEvent(event);
+		
 		selectedX = event.getX();
 	    selectedY = event.getY();
 		this.invalidate();
@@ -50,8 +56,51 @@ public class SelectableGraphicalView extends GraphicalView {
 		v.setId(R.layout.graphlegend);
 		// fill in any details dynamically here
 		TextView textView = new TextView(this.getContext());
-		textView.setText("your text");
+		
+		String toset = "";
+		
+		
+		// Doesn't work to get the real point (don't know why)
+		// So we have to get screen points, and start extrapolating
+		double [] points = new double[2];
+		double [] max_points = new double[2];
+		XYMultipleSeriesDataset data = ((StackedTimeChart) this.graph_chart).getDataset();
+		
+		points[0] = data.getSeriesAt(0).getMinX();
+		points[1] = 1;
+		double [] min_screen_points = ((StackedTimeChart) this.graph_chart).toScreenPoint(points);
+		max_points[0] = data.getSeriesAt(0).getMaxX();
+		max_points[1] = 1.0;
+		double [] max_screen_points = ((StackedTimeChart) this.graph_chart).toScreenPoint(max_points);
+		double[] graph_points = new double[2];
+		
+		graph_points[0] = (((max_points[0] - points[0]) / (max_screen_points[0] - min_screen_points[0])) * this.selectedX) + points[0];
+		
+		
+		double previous_y = 0;
+		for(int i = 0; i < data.getSeriesCount(); i++) {
+			XYSeries series = data.getSeriesAt(i);
+			String title = series.getTitle();
+			int min_distance_index = 0;
+			double min_distance = Double.MAX_VALUE;
+			for(int a = 0; a < data.getSeriesAt(0).getItemCount(); a++) {
+				points[0] = data.getSeriesAt(0).getX(a);
+				double tmp_distance = Math.abs(points[0] - graph_points[0]);
+				if(tmp_distance < min_distance) {
+					min_distance = tmp_distance;
+					min_distance_index = a;
+				}
+			}
+			double tmp_value = series.getY(min_distance_index) - previous_y;
+			previous_y = series.getY(min_distance_index);
+			String value = Double.toString(tmp_value);
+			toset += title + ": " + value + "\n";
+		}
+		
+		textView.setText(toset);
 		v.addView(textView);
+		
+		
 
 		// insert into main view
 		View parent = (View) this.getParent().getParent();
