@@ -177,6 +177,7 @@ public class OSGMonitoringActivity extends Activity implements OnClickListener, 
 	}
 	
 	public void onDrawerOpened() {
+		findViewById(R.id.sliderlayout).bringToFront();
 		this.auto_textview.selectAll();
 		
 	}
