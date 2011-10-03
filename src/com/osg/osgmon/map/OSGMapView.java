@@ -33,7 +33,7 @@ public class OSGMapView extends MapActivity {
 	    
 	}
 	
-	public final static String SITE_URL = "http://myosg-itb.grid.iu.edu/map/xml?map_attrs_shownr=on&all_sites=on&active=on&active_value=1&disable_value=1&gridtype=on&gridtype_1=on";
+	public final static String SITE_URL = "http://myosg.grid.iu.edu/map/xml?map_attrs_shownr=on&all_sites=on&active=on&active_value=1&disable_value=1&gridtype=on&gridtype_1=on";
 	
 	LinearLayout linearLayout;
 	MapView mapView;
