@@ -11,22 +11,23 @@ import org.json.simple.parser.JSONParser;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
 
 import com.osg.osgmon.map.OSGMapView;
 import com.osg.osgmon.monitoring.OSGMonitoringActivity;
 
-public class HelloAndroid extends Activity implements OnClickListener {
+public class HelloAndroid extends Activity implements OnClickListener, Runnable {
 	
 	public OSGMonitoringActivity osg_monitoring;
 	
+	protected static final String INITIAL_WEBVIEW_TEXT = "<html bgcolor=\"black\"><head><style type=\"text/css\">body {color:white;}</style></head><body bgcolor=\"black\">Loading OSG Stats...</body></html>";
 	
     /** Called when the activity is first created. */
     @Override
@@ -48,8 +49,9 @@ public class HelloAndroid extends Activity implements OnClickListener {
         
         // Check if we're on a tablet
         // NOTE: Configuration class doesn't have xlarge for Android 2.2
-        	String status_html = this.CreateStatusDisplay();
-        	status.loadData(status_html, "text/html", "utf-8");
+        	Thread loadtext = new Thread(this);
+        	loadtext.start();
+        	status.loadData(HelloAndroid.INITIAL_WEBVIEW_TEXT, "text/html", "utf-8");
 
         
         
@@ -61,6 +63,23 @@ public class HelloAndroid extends Activity implements OnClickListener {
     	
     }
 
+    
+    /**
+     * Handler for the phone webview stats message.
+     * 
+     */
+	Handler webview_message = new Handler() {
+
+		public void handleMessage(Message msg) {
+			
+			WebView status = (WebView) findViewById(R.id.webView1);
+			String status_html = (String) msg.obj;
+			status.loadData(status_html, "text/html", "utf-8");
+			
+
+		}
+
+	};
 
 	public void onClick(View v) {
 		if (v.getId()  == R.id.view_map) {
@@ -75,6 +94,19 @@ public class HelloAndroid extends Activity implements OnClickListener {
 		}
 		
 	}
+	
+	
+	/**
+	 * Thread running function.  Used to create the webview_message for phones.
+	 * 
+	 */
+	public void run() {
+		Message msg = Message.obtain(webview_message);
+		msg.obj = CreateStatusDisplay();
+		msg.sendToTarget();
+	}
+    
+	
 	
 	protected String CreateStatusDisplay() {
 		// First, get json
