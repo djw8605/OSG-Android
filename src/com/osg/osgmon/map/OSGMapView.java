@@ -64,23 +64,24 @@ public class OSGMapView extends MapActivity {
 		
 		public void handleMessage(Message msg) {
 			mapOverlays = mapView.getOverlays();
+			
 			Drawable red_marker = getResources().getDrawable(R.drawable.marker);
 			Drawable green_marker = getResources().getDrawable(R.drawable.marker2);
-			
-			itemizedOverlay = new OSGSiteItemizedOverlay(drawable, mapView);
+			OSGSiteItemizedOverlay green_overlay = new OSGSiteItemizedOverlay(green_marker, mapView);
+			OSGSiteItemizedOverlay red_overlay = new OSGSiteItemizedOverlay(red_marker, mapView);
 			
 			ArrayList<MapSiteElement> overlayitems = (ArrayList<MapSiteElement>) msg.obj;
 			for (int i = 0; i < overlayitems.size(); i++) {
 				MapSiteElement item = overlayitems.get(i);
 				if (item.GetStatus().equals("ok")) {
-					item.setMarker(green_marker);
+					green_overlay.addOverlay(item);
 				} else {
-					item.setMarker(red_marker);
+					red_overlay.addOverlay(item);
 				}
-				itemizedOverlay.addOverlay(overlayitems.get(i));
 			}
 			
-			mapOverlays.add(itemizedOverlay);
+			mapOverlays.add(red_overlay);
+			mapOverlays.add(green_overlay);
 		}
 		
 		
