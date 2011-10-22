@@ -20,6 +20,7 @@ public class OSGSiteMapParser implements ContentHandler {
 	protected String current_path = null;
 	protected String status = "";
 	protected boolean read_site = false;
+	protected boolean read_status = false;
 	
 	
 	public OSGSiteMapParser() {
@@ -41,6 +42,7 @@ public class OSGSiteMapParser implements ContentHandler {
 			this.read_site = false;
 		} else if (ReadingStatus) {
 			this.status = new String(arg0, start, length);
+			this.read_status = false;
 		}
 		
 	}
@@ -109,16 +111,19 @@ public class OSGSiteMapParser implements ContentHandler {
 		
 		if (qName.equals("Site")) {
 			this.read_site = true;
+			this.read_status = true;
 		} else if (qName.equals("Latitude")) {
 			this.ReadingLat = true;
 		} else if (qName.equals("Longitude")) {
 			this.ReadingLog = true;
+		} else if (qName.equals("Status") && this.read_status) {
+			this.ReadingStatus = true;
 		}
 		
 		if (qName.equals("Name") && this.read_site) {
 			this.ReadingName = true;
-			
 		}
+		
 
 	}
 
