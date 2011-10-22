@@ -13,11 +13,12 @@ public class MapSiteElement extends OverlayItem {
 	
 	
 	public MapSiteElement(String site_name, float lat, float log, String status) {
-		super(new GeoPoint((int)(lat * 1E6), (int)(log * 1E6)), site_name, site_name);
+		super(new GeoPoint((int)(lat * 1E6), (int)(log * 1E6)), site_name, "Status: " + status);
 		this.mSiteName = site_name;
 		this.lat = lat;
 		this.log = log;
 		this.mStatus = status;
+		
 		
 	}
 	
