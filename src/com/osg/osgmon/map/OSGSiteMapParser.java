@@ -12,11 +12,13 @@ public class OSGSiteMapParser implements ContentHandler {
 	protected boolean ReadingLat = false;
 	protected boolean ReadingLog = false;
 	protected boolean ReadingName = false;
+	protected boolean ReadingStatus = false;
 	protected ArrayList<MapSiteElement> LatLogSite;
 	protected float lat = 0;
 	protected float log = 0;
 	protected String siteName;
 	protected String current_path = null;
+	protected String status = "";
 	protected boolean read_site = false;
 	
 	
@@ -37,6 +39,8 @@ public class OSGSiteMapParser implements ContentHandler {
 		else if (ReadingName) {
 			siteName = new String(arg0, start, length);
 			this.read_site = false;
+		} else if (ReadingStatus) {
+			this.status = new String(arg0, start, length);
 		}
 		
 	}
@@ -55,9 +59,11 @@ public class OSGSiteMapParser implements ContentHandler {
 			ReadingLog = false;
 		if (ReadingName)
 			ReadingName = false;
+		if (ReadingStatus)
+			ReadingStatus = false;
 		
 		if (arg1.equals("Site")) {
-			this.LatLogSite.add(new MapSiteElement(this.siteName, this.lat, this.log));
+			this.LatLogSite.add(new MapSiteElement(this.siteName, this.lat, this.log, this.status));
 			
 		}
 
