@@ -52,7 +52,6 @@ public class HelloAndroid extends Activity implements OnClickListener, Runnable 
         	Thread loadtext = new Thread(this);
         	loadtext.start();
         	status.loadData(HelloAndroid.INITIAL_WEBVIEW_TEXT, "text/html", "utf-8");
-
         
         
     	Button monitoring_button = (Button)findViewById(R.id.view_monitoring);

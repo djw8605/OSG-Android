@@ -33,7 +33,7 @@ public class OSGMapView extends MapActivity {
 	    
 	}
 	
-	public final static String SITE_URL = "http://myosg-itb.grid.iu.edu/map/xml?map_attrs_shownr=on&all_sites=on&active=on&active_value=1&disable_value=1&gridtype=on&gridtype_1=on";
+	public final static String SITE_URL = "http://myosg.grid.iu.edu/map/xml?map_attrs_shownr=on&all_sites=on&active=on&active_value=1&disable_value=1&gridtype=on&gridtype_1=on";
 	
 	LinearLayout linearLayout;
 	MapView mapView;
@@ -64,14 +64,24 @@ public class OSGMapView extends MapActivity {
 		
 		public void handleMessage(Message msg) {
 			mapOverlays = mapView.getOverlays();
-			drawable = getResources().getDrawable(R.drawable.icon);
-			itemizedOverlay = new OSGSiteItemizedOverlay(drawable, mapView);
 			
-			ArrayList<OverlayItem> overlayitems = (ArrayList<OverlayItem>) msg.obj;
-			for (int i = 0; i < overlayitems.size(); i++)
-				itemizedOverlay.addOverlay(overlayitems.get(i));
+			Drawable red_marker = getResources().getDrawable(R.drawable.marker);
+			Drawable green_marker = getResources().getDrawable(R.drawable.marker2);
+			OSGSiteItemizedOverlay green_overlay = new OSGSiteItemizedOverlay(green_marker, mapView);
+			OSGSiteItemizedOverlay red_overlay = new OSGSiteItemizedOverlay(red_marker, mapView);
 			
-			mapOverlays.add(itemizedOverlay);
+			ArrayList<MapSiteElement> overlayitems = (ArrayList<MapSiteElement>) msg.obj;
+			for (int i = 0; i < overlayitems.size(); i++) {
+				MapSiteElement item = overlayitems.get(i);
+				if (item.GetStatus().equals("ok")) {
+					green_overlay.addOverlay(item);
+				} else {
+					red_overlay.addOverlay(item);
+				}
+			}
+			
+			mapOverlays.add(red_overlay);
+			mapOverlays.add(green_overlay);
 		}
 		
 		
