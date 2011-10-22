@@ -21,5 +21,8 @@ public class MapSiteElement extends OverlayItem {
 		
 	}
 	
+	public String GetStatus() {
+		return this.mStatus;
+	}
 	
 }
